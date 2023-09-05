@@ -16,7 +16,7 @@
 
 1. docker-compose up --build
 
-ターミナルに以下が表示されたら"http://localhost:3000"にアクセス
+ターミナルに以下が表示されたらアクセスできるようになります
 
 ```
 team-5-frontend-1 | Compiled successfully!
