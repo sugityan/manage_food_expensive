@@ -13,32 +13,50 @@
 ## Dockerの使用・MySQLの確認
 
 1. コンテナ起動
-    - docker-compose up -d --build
+```
+docker-compose up -d --build
+```
 
-2. コンテナdbに入る
-    - docker exec -it db bash
+2. コンテナ(db)に入る
+```
+docker exec -it db bash
+```
 
 3. mysqlへ接続
-    - mysql -u root -p
-    - Enter password:　rootpass
+```
+mysql -u root -p
+Enter password:　rootpass
+```
 
 4. データベース接続
-    - mysql -u root -p
+```
+mysql -u root -p
+```
 
 5. どんなデータベースがあるか
-    - show databases;
+```
+show databases;
+```
 
-6. 使用したいデータベースに切り替え
-    - use　データベ-ス名;
+6. 使用したいデータベース(sample_db)に切り替え
+```
+use　sample_db;
+```
 
 7. テーブル一覧
-    - show tables;
+```
+show tables;
+```
 
-8. テーブルの構造確認
-    - describe テーブル名複数系;
+8. テーブル(test_user)の構造確認
+```
+describe test_user;
+```
 
-9. テーブルの中身確認 
-    - select * from テーブル名複数系;
+9. テーブル(test_user)の中身確認 
+```
+select * from test_user;
+```
 
 ## 参考
 - FastAPI + MySQL + Dockerを利用したAPI開発方法
