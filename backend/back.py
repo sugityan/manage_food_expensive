@@ -6,7 +6,7 @@ app = FastAPI()
 
 # frontendのurl
 origins = [
-    "http://localhost:3000",  
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
@@ -17,6 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class Number(BaseModel):
     number: int
 
@@ -24,5 +25,3 @@ class Number(BaseModel):
 @app.post("/")
 async def increment_number(item: Number):
     return {"result": item.number + 1}
-
-
