@@ -188,8 +188,6 @@ classDiagram
 ```
 ----
 
-----
-
 #### login page関連
 
 ##### POST `/login`
