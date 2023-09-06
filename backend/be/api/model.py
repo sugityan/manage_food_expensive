@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date, MetaData
 from pydantic import BaseModel
 from db import Base
 from db import ENGINE
+
 
 # テーブル定義
 class TestUserTable(Base):
@@ -16,11 +17,54 @@ class TestUserTable2(Base):
     name = Column(String(30), nullable=False)
     nickname = Column(String(128), nullable=False)
 
+class User(Base):
+    __tablename__ = "User"
+
+    UserID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    Password = Column(String(8), nullable=False)
+    p_num = Column(Integer, nullable=False)
+    age = Column(Integer, nullable=False)
+    Email = Column(String(255), nullable=False)
+
+class Shopping(Base):
+    __tablename__ = "Shopping"
+
+    ShoppingID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    UserID = Column(Integer, ForeignKey("User.UserID"), nullable=False)
+    Date = Column(Date)
+    Purpose = Column(Integer, nullable=False)
+    Price = Column(Integer, nullable=False)
+
+class Food(Base):
+    __tablename__ = "Food"
+
+    FoodID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    UserID = Column(Integer, ForeignKey("User.UserID"), nullable=False)
+    name = Column(String(255), nullable=False)
+    category = Column(Integer, nullable=False)
+    price = Column(Integer, nullable=False)
+    expiry_date = Column(Date, nullable=False)
+    Date = Column(Date, nullable=False)
+    amount = Column(Integer)
+    unit = Column(String(255))
+    memo = Column(String(255))
+    Remaining = Column(Integer)
+    status = Column(Integer, nullable=False)
+
 # モデル定義 
 class TestUser(BaseModel):
     id: int
     name: str
     email: str
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
+
+class EatoutData(BaseModel):
+    date: str  # YYYY-MM-DD 形式の文字列
+    price: int
+    purpose: int
 
 
 def main():

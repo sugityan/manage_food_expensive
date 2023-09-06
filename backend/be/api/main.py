@@ -4,6 +4,7 @@ from db import session
 from model import *
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
+from datetime import datetime
 
 app = FastAPI()
 
@@ -16,10 +17,6 @@ app.add_middleware(
 )
 
 
-
-class UserCreate(BaseModel):
-    name: str
-    email: str
 
 #　ユーザー情報一覧取得
 @app.get("/test_users")
@@ -36,6 +33,30 @@ def get_user(user_id: int):
     return user
 
 
+# @app.post("/eatout_register")  # 適切なエンドポイント名に置き換えてください
+# async def receive_data(data: EatoutData):
+#     # 受け取ったデータをそれぞれの変数に格納
+#     received_date = data.date
+#     received_price = data.price
+#     received_purpose = data.purpose
+
+#     # ここで受け取ったデータを使って何かを実行できます。
+#     # 今回はデモのため、受け取ったデータをそのままレスポンスとして返します。
+#     return {
+#         "received_date": received_date,
+#         "received_price": received_price,
+#         "received_purpose": received_purpose
+#     }
+
+@app.post("/eatout_register")
+async def add_data(data: EatoutData):
+    # 文字列をdatetime.dateに変換
+    converted_date = datetime.strptime(data.date, "%Y-%m-%d").date()
+    actual_db_item = Shopping(UserID=1, Date=converted_date, Price=data.price, Purpose=data.purpose)
+    session.add(actual_db_item)
+    session.commit()
+
+    return {"message": "Data added successfully!"}
 # ユーザ情報登録
 # @app.post("/test_users")
 # def post_user(user: TestUser):

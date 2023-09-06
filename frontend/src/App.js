@@ -1,57 +1,22 @@
-import React, { useState } from 'react';
-import './App.css';
-import axios from 'axios';
+import React from "react";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+
+import Home from "./pages/home";
+import EatoutRegistration from "./pages/eatoutRegistration";
+import GradientRegistration from "./pages/gradientRegistration";
+import FoodList from "./pages/foodList";
 
 function App() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [result, setResult] = useState(null);
-
-  const handleNameChange = (e) => {
-    setName(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/', { name: name, email: email });
-      setResult(response.data.result);
-    } catch (error) {
-      console.error("APIからデータの取得に失敗しました:", error);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black">
-      <div className="p-6 bg-green-200 shadow-md rounded-md">
-        <input 
-          type="text"
-          value={name}
-          placeholder="Name" 
-          onChange={handleNameChange}
-          className="p-2 border rounded w-full mb-2"
-        />
-        <input 
-          type="email"
-          value={email}
-          placeholder="Email" 
-          onChange={handleEmailChange}
-          className="p-2 border rounded w-full"
-        />
-        <button 
-          onClick={handleSubmit}
-          className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
-        >
-          送信
-        </button>
-        {result && (
-          <p className="mt-4 text-gray-700 font-bold">結果: {result}</p>
-        )}
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/compare" element={<Home />} />
+      <Route path="/gradient" element={<FoodList />} />
+      <Route path="/eatoutRegistrate" element={<EatoutRegistration />} />
+      <Route path="/gradientRegistrate" element={<GradientRegistration />} />
+    </Routes>
   );
 }
 
