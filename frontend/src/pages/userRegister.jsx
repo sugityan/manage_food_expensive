@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { Button, Card, Input, Typography } from "@material-tailwind/react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, Input, Button, Typography } from "@material-tailwind/react";
 
-const Login = () => {
+const UserRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState(0);
+  const [household, setHousehold] = useState(0);
   const navigate = useNavigate();
 
   //   ログイン処理
@@ -17,7 +19,7 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, age, household }),
       });
 
       //   response.okはレスポンスが200番台かどうかを判定する
@@ -40,7 +42,7 @@ const Login = () => {
     <div className="flex justify-center items-center h-screen">
       <Card color="transparent" shadow={false}>
         <Typography variant="h4" color="blue-gray">
-          Login
+          Register
         </Typography>
         <form
           className="mt-8 mb-2 w-80 max-w-screen-lg sm:w-96"
@@ -61,6 +63,20 @@ const Login = () => {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
             />
+            <Input
+              type="number"
+              size="lg"
+              label="Age"
+              value={age}
+              onChange={(event) => setAge(parseInt(event.target.value))}
+            />
+            <Input
+              type="number"
+              size="lg"
+              label="Household"
+              value={household}
+              onChange={(event) => setHousehold(parseInt(event.target.value))}
+            />
           </div>
           <Button
             type="submit"
@@ -68,15 +84,15 @@ const Login = () => {
             fullWidth
             onClick={handleSubmit}
           >
-            Login
+            Register
           </Button>
           <Typography color="gray" className="mt-4 text-center font-normal">
-            Have you not registered yet?{" "}
+            Already have an account?{" "}
             <a
-              href="/register"
+              href="/login"
               className="font-medium text-gray-900 border-b border-gray-600"
             >
-              register
+              Login
             </a>
           </Typography>
         </form>
@@ -85,4 +101,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default UserRegister;

@@ -8,12 +8,14 @@ import GradientRegistration from "./pages/gradientRegistration";
 import FoodList from "./pages/foodList";
 import Compare from "./pages/compare";
 import Login from "./pages/login";
+import UserRegister from "./pages/userRegister";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<UserRegister />} />
       <Route path="/home" element={<Home />} />
       <Route path="/compare" element={<Compare />} />
       <Route path="/gradient" element={<FoodList />} />
