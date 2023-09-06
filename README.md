@@ -28,32 +28,27 @@ mysql -u root -p
 Enter password:　rootpass
 ```
 
-4. データベース接続
-```
-mysql -u root -p
-```
-
-5. どんなデータベースがあるか
+4. どんなデータベースがあるか
 ```
 show databases;
 ```
 
-6. 使用したいデータベース(sample_db)に切り替え
+5. 使用したいデータベース(sample_db)に切り替え
 ```
 use　sample_db;
 ```
 
-7. テーブル一覧
+6. テーブル一覧
 ```
 show tables;
 ```
 
-8. テーブル(test_user)の構造確認
+7. テーブル(test_user)の構造確認
 ```
 describe test_user;
 ```
 
-9. テーブル(test_user)の中身確認 
+8. テーブル(test_user)の中身確認 
 ```
 select * from test_user;
 ```
