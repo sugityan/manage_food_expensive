@@ -299,9 +299,9 @@ classDiagram
 
 ```
 curl -X 'PUT' \
-  'http://127.0.0.1:8000/food_db' \
+  'http://127.0.0.1:8000/food_db?foodID=3' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI2Nzk0fQ.eaEvbaFF9uoWyyJA71MBVI5j199amo-L-vkKFksVFdM' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI3MzA4fQ.hat9b3irYX_PaxU5SQyJ8L5rVXirehbwNAbfKkhf6GU' \
   -H 'Content-Type: application/json' \
   -d '{
   "name": "test",
@@ -313,8 +313,7 @@ curl -X 'PUT' \
   "unit": "string",
   "memo": "string",
   "Remaining": 0,
-  "status": 0,
-  "FoodID": 3
+  "status": 0
 }'
 ```
 
@@ -331,7 +330,6 @@ curl -X 'PUT' \
   "memo": "string",
   "Remaining": 0,
   "status": 0,
-  "FoodID": 3
 }
 ```
 ```
