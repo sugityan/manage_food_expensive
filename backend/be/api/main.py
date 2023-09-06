@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from db import session
-from model import TestUserTable, TestUser
+from model import *
+from fastapi.security import OAuth2PasswordBearer
+
 
 app = FastAPI()
 
@@ -22,10 +24,32 @@ def get_user(user_id: int):
 # ユーザ情報登録
 @app.post("/test_users")
 def post_user(user: TestUser):
-    db_test_user = TestUser(name=user.name,
+    db_test_user = TestUser(id=user.id,
+                            name=user.name,
                             email=user.email)
-    session.add(db_test_user)
+    actual_db_item = TestUserTable(** db_test_user.dict())
+    session.add(actual_db_item)
     session.commit()
+    
+    
+
+# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# # ユーザ情報登録
+# @app.post("/users")
+# def user(user2: User):
+#     db_user = User(
+#                    name=user2.name,
+#                     email=user2.email,
+#                     password=user2.password)
+#     session.add(db_user)
+#     session.commit()
+
+# # ログイン
+# @app.get("/users/login")
+# async def login(token: str = Depends(oauth2_scheme)):
+#     return {"token": token}
+
 
 
 # ユーザ情報更新
