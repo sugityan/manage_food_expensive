@@ -1,10 +1,25 @@
 from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from db import session
 from model import *
 from fastapi.security import OAuth2PasswordBearer
-
+from pydantic import BaseModel
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # 許可するオリジンのリスト
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+
+class UserCreate(BaseModel):
+    name: str
+    email: str
 
 #　ユーザー情報一覧取得
 @app.get("/test_users")
@@ -22,14 +37,22 @@ def get_user(user_id: int):
 
 
 # ユーザ情報登録
-@app.post("/test_users")
-def post_user(user: TestUser):
-    db_test_user = TestUser(id=user.id,
-                            name=user.name,
-                            email=user.email)
-    actual_db_item = TestUserTable(** db_test_user.dict())
+# @app.post("/test_users")
+# def post_user(user: TestUser):
+#     db_test_user = TestUser(id=user.id,
+#                             name=user.name,
+#                             email=user.email)
+#     actual_db_item = TestUserTable(** db_test_user.dict())
+#     session.add(actual_db_item)
+#     session.commit()
+    
+
+@app.post("/")
+def post_user(user: UserCreate):
+    actual_db_item = TestUserTable2(name=user.name, nickname=user.email)
     session.add(actual_db_item)
     session.commit()
+    return{"result": 3}
     
     
 

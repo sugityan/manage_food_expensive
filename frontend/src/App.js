@@ -3,16 +3,21 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
-  const [inputValue, setInputValue] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [result, setResult] = useState(null);
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/', { number: inputValue });
+      const response = await axios.post('http://127.0.0.1:8000/', { name: name, email: email });
       setResult(response.data.result);
     } catch (error) {
       console.error("APIからデータの取得に失敗しました:", error);
@@ -23,10 +28,17 @@ function App() {
     <div className="min-h-screen flex items-center justify-center bg-black">
       <div className="p-6 bg-green-200 shadow-md rounded-md">
         <input 
-          type="number"
-          value={inputValue}
-          placeholder="number" 
-          onChange={handleInputChange}
+          type="text"
+          value={name}
+          placeholder="Name" 
+          onChange={handleNameChange}
+          className="p-2 border rounded w-full mb-2"
+        />
+        <input 
+          type="email"
+          value={email}
+          placeholder="Email" 
+          onChange={handleEmailChange}
           className="p-2 border rounded w-full"
         />
         <button 
