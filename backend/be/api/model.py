@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date,
 from pydantic import BaseModel
 from db import Base
 from db import ENGINE
-
+from datetime import date
 
 # テーブル定義
 class TestUserTable(Base):
@@ -17,7 +17,7 @@ class TestUserTable2(Base):
     name = Column(String(30), nullable=False)
     nickname = Column(String(128), nullable=False)
 
-class User(Base):
+class UserTable(Base):
     __tablename__ = "User"
 
     UserID = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -26,7 +26,7 @@ class User(Base):
     age = Column(Integer, nullable=False)
     Email = Column(String(255), nullable=False)
 
-class Shopping(Base):
+class ShoppingTable(Base):
     __tablename__ = "Shopping"
 
     ShoppingID = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -35,7 +35,7 @@ class Shopping(Base):
     Purpose = Column(Integer, nullable=False)
     Price = Column(Integer, nullable=False)
 
-class Food(Base):
+class FoodTable(Base):
     __tablename__ = "Food"
 
     FoodID = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -57,9 +57,62 @@ class TestUser(BaseModel):
     name: str
     email: str
 
+class User(BaseModel):
+    UserID: int
+    Password: str
+    p_num: int
+    age: int
+    Email: str
+
+class Shopping(BaseModel):
+    ShoppingID: int
+    UserID: int
+    Date: date
+    Purpose: int
+    Price: int
+
+class Food(BaseModel):
+    FoodID: int
+    UserID: int
+    name: str
+    category: int
+    price: int
+    expiry_date: date
+    Date: date
+    amount: int
+    unit: str
+    memo: str
+    Remaining: int
+    status: int
+
 class UserCreate(BaseModel):
     name: str
     email: str
+
+class UserNew(BaseModel):
+    Password: str
+    p_num: int
+    age: int
+    Email: str
+
+class ShoppingNew(BaseModel):
+    UserID: int
+    Date: date
+    Purpose: int
+    Price: int
+
+class FoodNew(BaseModel):
+    UserID: int
+    name: str
+    category: int
+    price: int
+    expiry_date: date
+    Date: date
+    amount: int
+    unit: str
+    memo: str
+    Remaining: int
+    status: int
 
 class EatoutData(BaseModel):
     date: str  # YYYY-MM-DD 形式の文字列
