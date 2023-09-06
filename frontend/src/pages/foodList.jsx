@@ -1,15 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import {
+  Button,
   Card,
+  Input,
   List,
   ListItem,
+  Popover,
+  PopoverContent,
+  PopoverHandler,
   Progress,
   Typography,
 } from "@material-tailwind/react";
 
 const FoodList = () => {
+  const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
+
+  //   ここで残量が変更された時の処理(未実装)
+  const handleRegisterPopoverInput = () => {
+    setRegisterPopoverInput(!registerPopoverInput);
+  };
+
   const foodList = [
     {
       name: "トマト",
@@ -54,6 +66,7 @@ const FoodList = () => {
         <div className="w-full">
           <Card>
             <List>
+              {/* 一番上の行 */}
               <ListItem className="bg-gray-100">
                 <div className="flex items-center w-full">
                   <div className="w-1/6 font-bold text-center">商品名</div>
@@ -65,6 +78,7 @@ const FoodList = () => {
                   <div className="w-full font-bold text-center">残量</div>
                 </div>
               </ListItem>
+              {/* 実際にデータを表示 */}
               {foodList.map((food, index) => (
                 <a href="#" className="text-initial" key={index}>
                   <ListItem>
@@ -82,16 +96,43 @@ const FoodList = () => {
                         {food.quantity}
                         {food.unit}
                       </div>
-                      <div className="w-full">
-                        <div className="mb-2 flex items-center justify-between gap-4">
-                          <Typography color="blue-gray" variant="h6">
-                            残量
-                          </Typography>
-                          <Typography color="blue-gray" variant="h6">
-                            {food.stock}%
-                          </Typography>
+                      <div className="w-full flex justify-between items-center">
+                        <div className="w-full">
+                          <div className="mb-2 flex items-center justify-between gap-4">
+                            {console.log("rendering")}
+                            <Typography color="blue-gray" variant="h6">
+                              残量
+                            </Typography>
+                            <Typography color="blue-gray" variant="h6">
+                              {food.stock}%
+                            </Typography>
+                          </div>
+                          <Progress value={food.stock} max={100} />
                         </div>
-                        <Progress value={food.stock} max={100} />
+                        <Popover placement="bottom">
+                          <PopoverHandler>
+                            <Button className="w-40 ml-10">残量設定</Button>
+                          </PopoverHandler>
+                          {/* 残量の変更をする部分 */}
+                          <PopoverContent className="w-96">
+                            <Typography
+                              variant="h6"
+                              color="blue-gray"
+                              className="mb-6"
+                            >
+                              残量を設定してください
+                            </Typography>
+                            <div className="flex gap-2">
+                              <Input label="残量(%)" type="number" />
+                              <Button
+                                variant="gradient"
+                                onClick={() => handleRegisterPopoverInput()}
+                              >
+                                OK
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                       </div>
                     </div>
                   </ListItem>
