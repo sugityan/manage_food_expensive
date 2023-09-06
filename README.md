@@ -210,7 +210,7 @@ classDiagram
 
 #### Home page関連
 
-##### GET `/get_foods`
+##### GET `/food_db`
 ```
 // curl -X 'GET' \
   'http://127.0.0.1:8000/food_db' \
@@ -254,16 +254,19 @@ classDiagram
 
 ##### GET `/get_alert_foods`
 ```
-// /get_foods?userID=1
+// curl -X 'GET' \
+  'http://127.0.0.1:8000/get_alert_foods' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI0NjM4fQ.s5zGvB0oPnTX5ycBy1U-7vGy22v2pUmbEPmsyHRL3DY'
 // レスポンスはリストになって返ってくる.
 [
   {
-    "Remaining_days": 0,
-    "name": "string"
+    "Remaining_days": 1,
+    "name": "test"
   },
   {
-    "Remaining_days": 34,
-    "name": ""
+    "Remaining_days": 1,
+    "name": "test2"
   }
 ]
 ```
