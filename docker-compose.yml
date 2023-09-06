@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    # m1 macの場合はplatformを指定する必要がある
     platform: linux/x86_64
     image: mysql:5.7
     container_name: db
@@ -20,6 +21,7 @@ services:
     tty: true
 
   api:
+    # m1 macの場合はplatformを 指定する必要がある
     platform: linux/x86_64
     depends_on:
       - db
