@@ -90,46 +90,38 @@ select * from test_user;
 
 ```mermaid
 classDiagram
-    User -- DailyMeals : 1 - n (ユーザーは多数の食事記録を持つ)
-    User -- Article : 1 - n (ユーザーは多数の投稿を持つ)
-    User -- Dishes : 1 - n (ユーザーは多数の料理を持つ)
-    Ingredients -- Dishes : 1 - n (1つの原材料は多数の料理に使われる)
-    DailyMeals -- Dishes : 1 - n (1つの食事記録は多数の料理から成る)
+    User -- Shopping : 1 - n (ユーザーは多数の購買記録を持つ)
+    User -- Food : 1 - n (ユーザーは多数の食べ物を持つ)
 
     class User {
-        +userId (PK)
-        password
-        salt
+        +UserID (PK)
+        Password
+        p_num
         age
-        sex
-        height
-　　　　　　　　　　　　　　　　weight
-        dailyNutrientGoals
+        Email
     }
 
-    class Article {
-       +userId(PK)
-       +timestamp(SK)
+    class Food {
+       +FoodID(PK)
+       +UserID(SK)
+       name
        category
-       text
+       price
+       expiry_date
+       Date
+       amount
+       unit
+       memo
+       Remaining
+       status
     }
 
-    class Dishes {
-        +dishName (PK)
-        +userId (SK)
-        ingredients
-        nutrients
-    }
-
-    class DailyMeals {
-        +userId (PK)
-        +date (SK)
-        meals 
-    }
-
-    class Ingredients {
-        +ingredientName (PK)
-        nutrients
+    class Shopping {
+        +ShoppingID (PK)
+        +UserID (SK)
+        Date
+        Purpose
+        Price
     }
 
 ```
