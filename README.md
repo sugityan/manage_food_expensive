@@ -12,8 +12,7 @@
 
 ## docker-compose.yamlのplatform設定
 platformをM1マック用に指定してありますが、M1マック以外の方はコメントアウトしてください。
-
-
+<br>
 platform: linux/x86_64
 
 
