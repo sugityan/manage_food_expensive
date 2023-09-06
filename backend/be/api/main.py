@@ -44,7 +44,7 @@ def put_users(user: User, user_id: int):
 
 
 
-#　ログイン用：ユーザー情報一覧取得
+#　ログイン画面：ユーザー情報一覧取得
 @app.get("/get_users_dict")
 def get_users_dict():
     users_dict = {}
@@ -53,3 +53,46 @@ def get_users_dict():
         email = user.email
         users_dict[email] = user
     return users_dict
+
+
+# ユーザ登録画面：ユーザ情報登録
+@app.post("/sign_up_user")
+def post_user(user: User):
+    new_user = User(email=user.email,
+                        age=user.age,
+                        household=user.household,
+                        password=user.password)
+    session.add(new_user)
+    session.commit()
+
+# 食材登録画面：食材登録
+@app.post("/add_food")
+def post_food(food: Food):
+    new_food = Food(food_name=food.food_name,
+                        category=food.category,
+                        price=food.price,
+                        limit_date=food.limit_date,
+                        buy_date=food.buy_date,
+                        amount=food.amount,
+                        unit=food.unit,
+                        memo=food.memo,
+                        remain_ratio=food.remain_ratio,
+                        userID=food.userID)
+    session.add(new_food)
+    session.commit()
+
+# 食費登録画面：食費情報登録
+@app.post("/add_cost")
+def post_cost(cost: Cost):
+    new_cost = Cost(buy_date=cost.buy_date,
+                        uses=cost.uses,
+                        price=cost.price,
+                        userID=cost.userID)
+    session.add(new_cost)
+    session.commit()
+
+# 食材一覧画面：食材情報一覧取得
+@app.get("/get_foods")
+def get_food_list():
+    users = session.query(UserTable).all()
+    return users

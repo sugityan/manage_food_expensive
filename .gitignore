@@ -39,4 +39,3 @@ pip-selfcheck.json
 # backend
 backend/__pycache__
 backend/api/__pycache__
-backend/db/data

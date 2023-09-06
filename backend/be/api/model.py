@@ -30,7 +30,7 @@ class CostTable(Base):
     costID = Column("costID", Integer, primary_key=True, autoincrement=True)
     # 型使用可能か確認
     buy_date = Column("date", Integer, nullable=False)
-    usage = Column("usage", Integer, nullable=False) #
+    uses = Column("usage", Integer, nullable=False) #
     price = Column("price", Integer, nullable=False)
     userID = Column("userID", String(128), ForeignKey("user.userID"), nullable=False)
 
@@ -38,7 +38,7 @@ class CostTable(Base):
 class Cost(BaseModel):
     costID: int
     buy_date: int
-    usage: int
+    uses: int
     price: int
     userID: str
 
