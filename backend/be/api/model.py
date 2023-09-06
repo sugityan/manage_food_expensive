@@ -17,14 +17,25 @@ class TestUserTable2(Base):
     name = Column(String(30), nullable=False)
     nickname = Column(String(128), nullable=False)
 
+
 class UserTable(Base):
     __tablename__ = "User"
 
     UserID = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    Password = Column(String(8), nullable=False)
+    Password = Column(String(255), nullable=False)
     p_num = Column(Integer, nullable=False)
     age = Column(Integer, nullable=False)
     Email = Column(String(255), nullable=False)
+
+    def toDict(self):
+        return {
+            "UserID": self.UserID,
+            "Password": self.Password,
+            "p_num": self.p_num,
+            "age": self.age,
+            "Email": self.Email
+        }
+
 
 class ShoppingTable(Base):
     __tablename__ = "Shopping"
@@ -58,11 +69,11 @@ class TestUser(BaseModel):
     email: str
 
 class User(BaseModel):
-    UserID: int
     Password: str
     p_num: int
     age: int
     Email: str
+
 
 class Shopping(BaseModel):
     ShoppingID: int
