@@ -88,6 +88,53 @@ select * from test_user;
 
 ## 設計
 
+```mermaid
+classDiagram
+    User -- DailyMeals : 1 - n (ユーザーは多数の食事記録を持つ)
+    User -- Article : 1 - n (ユーザーは多数の投稿を持つ)
+    User -- Dishes : 1 - n (ユーザーは多数の料理を持つ)
+    Ingredients -- Dishes : 1 - n (1つの原材料は多数の料理に使われる)
+    DailyMeals -- Dishes : 1 - n (1つの食事記録は多数の料理から成る)
+
+    class User {
+        +userId (PK)
+        password
+        salt
+        age
+        sex
+        height
+　　　　　　　　　　　　　　　　weight
+        dailyNutrientGoals
+    }
+
+    class Article {
+       +userId(PK)
+       +timestamp(SK)
+       category
+       text
+    }
+
+    class Dishes {
+        +dishName (PK)
+        +userId (SK)
+        ingredients
+        nutrients
+    }
+
+    class DailyMeals {
+        +userId (PK)
+        +date (SK)
+        meals 
+    }
+
+    class Ingredients {
+        +ingredientName (PK)
+        nutrients
+    }
+
+```
+---
+
 #### Userテーブル
 パスワードはバックエンド側でハッシュ化して,ハッシュ化したものを保存します。
 
@@ -118,7 +165,7 @@ select * from test_user;
 | Remaining | 残り | int(11) |
 | status | 消費したかどうかの状況(0 or 1) | int(11) |
 
-
+---
 #### Shoppingテーブル
 
 | カラム名  | 説明       | 型 |
