@@ -267,7 +267,7 @@ classDiagram
 ```
 
 ----
-#### Food Registration page関連
+#### Food page関連
 
 ##### Post `/food_db`
 
@@ -284,6 +284,54 @@ classDiagram
   "memo": "no",
   "Remaining": 2,
   "status": 0
+}
+```
+```
+// response
+{
+  "message": "Food created successfully!"
+}
+```
+
+----
+
+##### PUT `/food_db`
+
+```
+curl -X 'PUT' \
+  'http://127.0.0.1:8000/food_db' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI2Nzk0fQ.eaEvbaFF9uoWyyJA71MBVI5j199amo-L-vkKFksVFdM' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "test",
+  "category": 0,
+  "price": 0,
+  "expiry_date": "2023-09-06",
+  "Date": "2023-09-06",
+  "amount": 0,
+  "unit": "string",
+  "memo": "string",
+  "Remaining": 0,
+  "status": 0,
+  "FoodID": 3
+}'
+```
+
+```
+// request
+{
+  "name": "test",
+  "category": 0,
+  "price": 0,
+  "expiry_date": "2023-09-06",
+  "Date": "2023-09-06",
+  "amount": 0,
+  "unit": "string",
+  "memo": "string",
+  "Remaining": 0,
+  "status": 0,
+  "FoodID": 3
 }
 ```
 ```
