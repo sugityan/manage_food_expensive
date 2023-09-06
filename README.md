@@ -170,6 +170,24 @@ classDiagram
 
 ----
 
+#### user register page関連
+
+##### POST `/create_user`
+```
+// request
+{
+  "Password": "pass",
+  "p_num": 0,
+  "age": 0,
+  "Email": "mail"
+}
+```
+```
+// response
+{"message": "User created successfully!"}
+```
+----
+
 #### Home page関連
 
 ##### GET `/get_foods`
