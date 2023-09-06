@@ -1,16 +1,34 @@
-version: '3.8'
+version: '3'
 
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
+  db:
+    platform: linux/x86_64
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: mysqlpass
+    volumes:
+      - ./backend/db/data:/var/lib/mysql
+      - ./backend/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./backend/db/initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - 3308:3308
+    command: --port 3308
+    tty: true
+
+  api:
+    platform: linux/x86_64
+    depends_on:
+      - db
+    container_name: "api"
+    build: ./backend/be
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app/backend
-    networks:
-      - app-network
+      - ./backend/be/api:/usr/src/server
 
   frontend:
     build:

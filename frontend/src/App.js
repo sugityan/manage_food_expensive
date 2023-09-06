@@ -6,13 +6,14 @@ import Home from "./pages/home";
 import EatoutRegistration from "./pages/eatoutRegistration";
 import GradientRegistration from "./pages/gradientRegistration";
 import FoodList from "./pages/foodList";
+import Compare from "./pages/compare";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/compare" element={<Home />} />
+      <Route path="/compare" element={<Compare />} />
       <Route path="/gradient" element={<FoodList />} />
       <Route path="/eatoutRegistrate" element={<EatoutRegistration />} />
       <Route path="/gradientRegistrate" element={<GradientRegistration />} />
