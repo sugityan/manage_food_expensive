@@ -7,11 +7,13 @@ import EatoutRegistration from "./pages/eatoutRegistration";
 import GradientRegistration from "./pages/gradientRegistration";
 import FoodList from "./pages/foodList";
 import Compare from "./pages/compare";
+import Login from "./pages/login";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/compare" element={<Compare />} />
       <Route path="/gradient" element={<FoodList />} />
