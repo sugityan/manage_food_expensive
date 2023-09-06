@@ -21,14 +21,14 @@ import {
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [showPopoverInput, setShowPopoverInput] = useState(true);
+  const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
 
   const handleToggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const registerPopoverInput = () => {
-    setShowPopoverInput(!showPopoverInput);
+  const handleRegisterPopoverInput = () => {
+    setRegisterPopoverInput(!registerPopoverInput);
   };
 
   // データベースから取得
@@ -92,7 +92,7 @@ const Sidebar = () => {
                 </ListItem>
               </PopoverHandler>
               <PopoverContent className="">
-                {showPopoverInput ? (
+                {registerPopoverInput ? (
                   <>
                     <Typography variant="h6" color="blue-gray" className="mb-6">
                       どれだけ使えた？
@@ -101,7 +101,7 @@ const Sidebar = () => {
                       <Input label="残量(%)" type="number" />
                       <Button
                         variant="gradient"
-                        onClick={() => registerPopoverInput()}
+                        onClick={() => handleRegisterPopoverInput()}
                       >
                         OK
                       </Button>
