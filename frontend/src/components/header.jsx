@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Typography, IconButton } from "@material-tailwind/react";
+import { Navbar, Typography } from "@material-tailwind/react";
 
 const Header = () => {
   const navList = (
@@ -49,11 +49,6 @@ const Header = () => {
         </Typography>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
-          <IconButton
-            variant="text"
-            className="ml-auto h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-            ripple={false}
-          />
         </div>
       </div>
     </Navbar>
