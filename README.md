@@ -59,3 +59,65 @@ select * from test_user;
 
 - コンテナ内のデータベース閲覧
     https://qiita.com/go_glzgo/items/3520818659a07bd17839
+
+
+## 設計
+### テーブル図
+---
+#### Foodsテーブル
+| カラム名  | 説明       |
+|---------|-----------|
+| FoodID  | ユーザーID (パーティションキー) |
+| UserID | ハッシュ化したパスワード   |
+| salt | ソルト |
+| age     | 年齢       |
+| sex | 性別 |
+| height     | 身長 |
+| weight     | 体重 |
+| dailyNutrientGoals | 1日に取るべき栄養素の目標値(map) 例:{"protein":300, "dhc":100} |
+
+
+---
+#### Shoppingテーブル
+| カラム名  | 説明       |_
+|---------|-----------|
+| FoodID  | ユーザーID (パーティションキー) |
+| UserID | ハッシュ化したパスワード   |
+| salt | ソルト |
+| age     | 年齢       |
+| sex | 性別 |
+| height     | 身長 |
+| weight     | 体重 |
+| dailyNutrientGoals | 1日に取るべき栄養素の目標値(map) 例:{"protein":300, "dhc":100} |
+
+#### Userテーブル
+| カラム名  | 説明       |_
+|---------|-----------|
+| FoodID  | ユーザーID (パーティションキー) |
+| UserID | ハッシュ化したパスワード   |
+| salt | ソルト |
+| age     | 年齢       |
+| sex | 性別 |
+| height     | 身長 |
+| weight     | 体重 |
+| dailyNutrientGoals | 1日に取るべき栄養素の目標値(map) 例:{"protein":300, "dhc":100} |
+
+### API動作例
+#### User関連
+##### POST `/user/`
+----
+#### ingredients関連
+##### GET `/ingredients`
+```
+// ingredientsのName一覧がリストで返ってくる
+{
+    "ingredients": [
+        "onion",
+        "chicken",
+        "lettuce",
+        "salt",
+        "tomato"
+    ]
+}
+```
+
