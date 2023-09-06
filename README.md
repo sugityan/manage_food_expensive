@@ -1,33 +1,67 @@
 # Team-5
 
 ## frontend
-
 1. cd frontend
 2. npm install
 3. npm start
 
 ## backend
-
 1. cd backend
 2. pip install -r requirement.txt
 3. uvicorn back:app --reload
 
-## docker
+## docker-compose.yamlのplatform設定
+platformをM1マック用に指定してありますが、M1マック以外の方はコメントアウトしてください。
+<br>
+platform: linux/x86_64
 
-1. docker-compose up --build
 
-ターミナルに以下が表示されたらアクセスできるようになります
+## Dockerの使用・MySQLの確認
 
+1. コンテナ起動
 ```
-team-5-frontend-1 | Compiled successfully!
-team-5-frontend-1 |
-team-5-frontend-1 |
-team-5-frontend-1 | You can now view frontend in the browser.
-team-5-frontend-1 |
-team-5-frontend-1 |
-team-5-frontend-1 | Local: http://localhost:3000
-team-5-frontend-1 | On Your Network: http://172.18.0.2:3000
-team-5-frontend-1 |
-team-5-frontend-1 | Note that the development build is not optimized.
-team-5-frontend-1 | To create a production build, use npm run build.
+docker-compose up -d --build
 ```
+
+2. コンテナ(db)に入る
+```
+docker exec -it db bash
+```
+
+3. mysqlへ接続
+```
+mysql -u root -p
+Enter password:　rootpass
+```
+
+4. どんなデータベースがあるか
+```
+show databases;
+```
+
+5. 使用したいデータベース(sample_db)に切り替え
+```
+use　sample_db;
+```
+
+6. テーブル一覧
+```
+show tables;
+```
+
+7. テーブル(test_user)の構造確認
+```
+describe test_user;
+```
+
+8. テーブル(test_user)の中身確認 
+```
+select * from test_user;
+```
+
+## 参考
+- FastAPI + MySQL + Dockerを利用したAPI開発方法
+    https://qiita.com/KWS_0901/items/684ac71e728575b6eab0
+
+- コンテナ内のデータベース閲覧
+    https://qiita.com/go_glzgo/items/3520818659a07bd17839
