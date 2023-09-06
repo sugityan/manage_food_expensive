@@ -12,7 +12,9 @@
 
 ## docker-compose.yamlのplatform設定
 platformをM1マック用に指定してありますが、M1マック以外の方はコメントアウトしてください。
-    platform: linux/x86_64
+
+
+platform: linux/x86_64
 
 
 ## Dockerの使用・MySQLの確認
