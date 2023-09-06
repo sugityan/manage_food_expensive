@@ -167,3 +167,47 @@ classDiagram
 | Date   | 購入日 | date |
 | Purpose     | 目的       | int(11) |
 | Price | 値段 | int(11) |
+
+----
+
+#### Home page関連
+
+##### GET `/get_foods`
+```
+// /get_foods?UserID=1
+// レスポンスはリストになって返ってくる.
+[
+  {
+    "Remaining_days": 34,
+    "name": "",
+    "category": 101,
+    "Remaining": 5,
+    "elapsed_days": 1
+  },
+  {
+    "Remaining_days": 0,
+    "name": "string",
+    "category": 0,
+    "Remaining": 0,
+    "elapsed_days": 1
+  }
+]
+```
+
+----
+
+##### GET `/get_alert_foods`
+```
+// /get_foods?userID=1
+// レスポンスはリストになって返ってくる.
+[
+  {
+    "Remaining_days": 0,
+    "name": "string"
+  },
+  {
+    "Remaining_days": 34,
+    "name": ""
+  }
+]
+```
