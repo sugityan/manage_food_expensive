@@ -51,6 +51,25 @@ class Food(Base):
     Remaining = Column(Integer)
     status = Column(Integer, nullable=False)
 
+
+class UserTable(Base):
+    # TODO: change table name from user2 to User
+    __tablename__ = "user2"
+    UserID = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    Password = Column(String(255), nullable=False)
+    p_num = Column(Integer, nullable=False)
+    age = Column(Integer, nullable=False)
+    Email = Column(String(255), nullable=False)
+
+    def toDict(self):
+        return {
+            "UserID": self.UserID,
+            "Password": self.Password,
+            "p_num": self.p_num,
+            "age": self.age,
+            "Email": self.Email
+        }
+
 # モデル定義 
 class TestUser(BaseModel):
     id: int
@@ -65,6 +84,15 @@ class EatoutData(BaseModel):
     date: str  # YYYY-MM-DD 形式の文字列
     price: int
     purpose: int
+
+class User(BaseModel):
+    # TODO: check below parameters name is correct
+    userID: int
+    password: str
+    p_num: int
+    age: int
+    email: str
+
 
 
 def main():

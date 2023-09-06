@@ -20,7 +20,6 @@ services:
     tty: true
 
   api:
-    platform: linux/x86_64
     depends_on:
       - db
     container_name: "api"
