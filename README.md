@@ -188,6 +188,28 @@ classDiagram
 ```
 ----
 
+----
+
+#### login page関連
+
+##### POST `/login`
+```
+// request
+{
+  "email": "mail",
+  "password": "pass"
+}
+```
+```
+// response
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYWlsIiwiZXhwIjoxNjk0MDE5OTQyfQ.xgRHowsf4UIDni8aYNC84X6h5CWAthFYaWCHzLm0Q88",
+  "token_type": "bearer"
+}
+```
+----
+
+
 #### Home page関連
 
 ##### GET `/get_foods`
