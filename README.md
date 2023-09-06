@@ -103,7 +103,7 @@ classDiagram
 
     class Food {
        +FoodID(PK)
-       +UserID(SK)
+       +UserID(FK)
        name
        category
        price
@@ -118,7 +118,7 @@ classDiagram
 
     class Shopping {
         +ShoppingID (PK)
-        +UserID (SK)
+        +UserID (FK)
         Date
         Purpose
         Price
