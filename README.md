@@ -1,15 +1,19 @@
 # Team-5
 
 ## 目次
-    - [目次](#目次)
-    - [frontend](#frontend)
-    - [SwaggerUIの起動(backend)](#SwaggerUIの起動(backend))
-    - [Dockerの使用・MySQLの確認](#dockerの使用・mysqlの確認)
-        - [Command一覧](#Command一覧)
-        - [参考](#参考)
-    - [設計](#設計)
-        - [テーブル図](#テーブル図)
-    
+- [目次](#目次)
+- [frontend](#frontend)
+- [SwaggerUIの起動(backend)](#swaggeruiの起動backend)
+- [Dockerの使用・MySQLの確認](#dockerの使用・mysqlの確認)
+    - [Command一覧](#command一覧)
+    - [参考](#参考)
+- [設計](#設計)
+    - [テーブル図](#テーブル図)
+        - [Userテーブル](#userテーブル)
+        - [Foodテーブル](#foodテーブル)
+        - []
+
+
 
 ## frontend
 1. cd frontend
@@ -87,9 +91,9 @@ select * from test_user;
 #### Userテーブル
 パスワードはバックエンド側でハッシュ化して,ハッシュ化したものを保存します。
 
-| カラム名  | 説明       | 型 |
+| カラム名  | 説明       | 型 | 
 |---------|-----------|---------------|
-| UserID  | ユーザーID (パーティションキー) | int(11) |
+| UserID  | ユーザーID (パーティションキー) | int(11) | 
 | Password | ハッシュ化したパスワード   | varchar(255) |
 | p_num   | 世帯数 | int(11) |
 | age     | 年齢       | int(11) |
@@ -102,7 +106,7 @@ select * from test_user;
 | カラム名  | 説明       | 型 |
 |---------|-----------|---------------|
 | FoodID  | フードID (パーティションキー) | int(11) |
-| UserID | ユーザーID   | int(11) |
+| UserID | ユーザーID (フォーリンキー)  | int(11) |
 | name   | フードの名前 | varchar(255) |
 | category     | フードのカテゴリ       | int(11) |
 | price | 値段 | int(11) |
@@ -113,3 +117,14 @@ select * from test_user;
 | memo | メモ | varchar(255) |
 | Remaining | 残り | int(11) |
 | status | 消費したかどうかの状況(0 or 1) | int(11) |
+
+
+#### Shoppingテーブル
+
+| カラム名  | 説明       | 型 |
+|---------|-----------|---------------|
+| ShoppingID  | フードID (パーティションキー) | int(11) |
+| UserID | ユーザーID (フォーリンキー)   | int(11) |
+| Date   | 購入日 | date |
+| Purpose     | 目的       | int(11) |
+| Price | 値段 | int(11) |
