@@ -1,23 +1,38 @@
 # Team-5
 
+## 目次
+    - [目次](#目次)
+    - [frontend](#frontend)
+    - [SwaggerUIの起動(backend)](#SwaggerUIの起動(backend))
+    - [Dockerの使用・MySQLの確認](#dockerの使用・mysqlの確認)
+        - [Command一覧](#Command一覧)
+        - [参考](#参考)
+    - [設計](#設計)
+        - [テーブル図](#テーブル図)
+    
+
 ## frontend
 1. cd frontend
 2. npm install
 3. npm start
 
-## backend
+## SwaggerUIの起動(backend)
 1. cd backend
+2. cd be
 2. pip install -r requirement.txt
-3. uvicorn back:app --reload
+3. cd api
+4. uvicorn main:app --reload
 
 ## docker-compose.yamlのplatform設定
 platformをM1マック用に指定してありますが、M1マック以外の方はコメントアウトしてください。
+[docker-compose.yml](./docker-compose.yml)
 <br>
+```
 platform: linux/x86_64
-
+```
 
 ## Dockerの使用・MySQLの確認
-
+### Command一覧
 1. コンテナ起動
 ```
 docker-compose up -d --build
@@ -59,9 +74,42 @@ describe test_user;
 select * from test_user;
 ```
 
-## 参考
+### 参考
 - FastAPI + MySQL + Dockerを利用したAPI開発方法
     https://qiita.com/KWS_0901/items/684ac71e728575b6eab0
 
 - コンテナ内のデータベース閲覧
     https://qiita.com/go_glzgo/items/3520818659a07bd17839
+
+
+## 設計
+
+#### Userテーブル
+パスワードはバックエンド側でハッシュ化して,ハッシュ化したものを保存します。
+
+| カラム名  | 説明       | 型 |
+|---------|-----------|---------------|
+| UserID  | ユーザーID (パーティションキー) | int(11) |
+| Password | ハッシュ化したパスワード   | varchar(255) |
+| p_num   | 世帯数 | int(11) |
+| age     | 年齢       | int(11) |
+| Email | メールアドレス | varchar(255) |
+
+---
+
+#### Foodテーブル
+
+| カラム名  | 説明       | 型 |
+|---------|-----------|---------------|
+| FoodID  | フードID (パーティションキー) | int(11) |
+| UserID | ユーザーID   | int(11) |
+| name   | フードの名前 | varchar(255) |
+| category     | フードのカテゴリ       | int(11) |
+| price | 値段 | int(11) |
+| expiry_date | 賞味期限 | date |
+| Date | 購入日 | date |
+| amount | 量/個数 | int(11) |
+| unit | 単位 | varchar(255) |
+| memo | メモ | varchar(255) |
+| Remaining | 残り | int(11) |
+| status | 消費したかどうかの状況(0 or 1) | int(11) |
