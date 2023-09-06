@@ -338,3 +338,34 @@ curl -X 'PUT' \
   "message": "Food created successfully!"
 }
 ```
+
+----
+
+##### POST `/shopping`
+
+```
+curl -X 'POST' \
+  'http://127.0.0.1:8000/shopping' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI3NjI2fQ.FmBw_NDEfhJcgc6dpv8bnGo1ZP7kpZnjCaHebfz_SAE' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "Date": "2023-09-06",
+  "Purpose": 0,
+  "Price": 100
+}'
+```
+
+```
+// request
+{
+  "Date": "2023-09-06",
+  "Purpose": 0,
+  "Price": 100
+}
+```
+```
+{
+  "message": "shopping created successfully!"
+}
+```
