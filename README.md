@@ -212,24 +212,42 @@ classDiagram
 
 ##### GET `/get_foods`
 ```
-// /get_foods?UserID=1
+// curl -X 'GET' \
+  'http://127.0.0.1:8000/food_db' \
+  -H 'accept: application/json' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI0NDg3fQ.LTNGoByCGX_YkhC5CcE_T__79eGUONRxZQt58T7VZJ4'
+
 // レスポンスはリストになって返ってくる.
-[
-  {
-    "Remaining_days": 34,
-    "name": "",
-    "category": 101,
-    "Remaining": 5,
-    "elapsed_days": 1
-  },
-  {
-    "Remaining_days": 0,
-    "name": "string",
+{
+  "3": {
+    "FoodID": 3,
+    "UserID": 8,
+    "name": "test",
     "category": 0,
-    "Remaining": 0,
-    "elapsed_days": 1
+    "price": 200,
+    "expiry_date": "2023-10-10",
+    "Date": "2023-10-09",
+    "amount": 1,
+    "unit": "0",
+    "memo": "a",
+    "Remaining": 1,
+    "status": 1
+  },
+  "4": {
+    "FoodID": 4,
+    "UserID": 8,
+    "name": "test2",
+    "category": 1,
+    "price": 200,
+    "expiry_date": "2023-10-10",
+    "Date": "2023-10-09",
+    "amount": 1,
+    "unit": "0",
+    "memo": "a",
+    "Remaining": 1,
+    "status": 1
   }
-]
+}
 ```
 
 ----
