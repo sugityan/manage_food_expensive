@@ -41,3 +41,15 @@ def put_users(user: User, user_id: int):
     target_user.password = user.password
     session.commit()
 
+
+
+
+#　ログイン用：ユーザー情報一覧取得
+@app.get("/get_users_dict")
+def get_users_dict():
+    users_dict = {}
+    users_list = session.query(UserTable).all()
+    for user in users_list:
+        email = user.email
+        users_dict[email] = user
+    return users_dict
