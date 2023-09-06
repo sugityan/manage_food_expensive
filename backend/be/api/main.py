@@ -1,39 +1,43 @@
 from fastapi import FastAPI
 from db import session
-from model import TestUserTable, TestUser
+from model import UserTable, User, CostTable, Cost, FoodTable, Food
 
 app = FastAPI()
 
 #　ユーザー情報一覧取得
 @app.get("/test_users")
 def get_user_list():
-    users = session.query(TestUserTable).all()
+    users = session.query(UserTable).all()
     return users
 
 
-# ユーザー情報取得(id指定)
+# ユーザー登録画面：ユーザー情報取得(id指定)
 @app.get("/test_users/{user_id}")
 def get_user(user_id: int):
-    user = session.query(TestUserTable).\
-        filter(TestUserTable.id == user_id).first()
+    user = session.query(UserTable).\
+        filter(UserTable.userID == user_id).first()
     return user
 
 
 # ユーザ情報登録
 @app.post("/test_users")
-def post_user(user: TestUser):
-    db_test_user = TestUser(name=user.name,
-                            email=user.email)
+def post_user(user: User):
+    db_test_user = User(email=user.email,
+                        age=user.age,
+                        household=user.household,
+                        password=user.password)
     session.add(db_test_user)
     session.commit()
 
 
 # ユーザ情報更新
 @app.put("/test_users/{user_id}")
-def put_users(user: TestUser, user_id: int):
-    target_user = session.query(TestUserTable).\
-        filter(TestUserTable.id == user_id).first()
-    target_user.name = user.name
+def put_users(user: User, user_id: int):
+    target_user = session.query(UserTable).\
+        filter(UserTable.id == user_id).first()
     target_user.email = user.email
+    target_user.age = user.age
+    target_user.household = user.household
+    target_user.password = user.password
     session.commit()
 

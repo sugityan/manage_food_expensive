@@ -1,8 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
+import pymysql
+pymysql.install_as_MySQLdb()
 
-host = "db:3308"
+# 500=>server error, url error, database error
+# 400=>request error, client error, parameter error, not authorized
+# 200=>success, ok
+host = "127.0.0.1:3308"
 db_name = "sample_db"
 user = "mysqluser"
 password = "mysqlpass"
