@@ -2,6 +2,7 @@ version: '3'
 
 services:
   db:
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: db
     environment:
@@ -19,6 +20,7 @@ services:
     tty: true
 
   api:
+    platform: linux/x86_64
     depends_on:
       - db
     container_name: "api"
