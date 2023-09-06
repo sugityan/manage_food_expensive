@@ -212,10 +212,7 @@ classDiagram
 
 ##### GET `/food_db`
 ```
-// curl -X 'GET' \
-  'http://127.0.0.1:8000/food_db' \
-  -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI0NDg3fQ.LTNGoByCGX_YkhC5CcE_T__79eGUONRxZQt58T7VZJ4'
+// /food_db
 
 // レスポンスはリストになって返ってくる.
 {
@@ -254,10 +251,8 @@ classDiagram
 
 ##### GET `/get_alert_foods`
 ```
-// curl -X 'GET' \
-  'http://127.0.0.1:8000/get_alert_foods' \
-  -H 'accept: application/json' \
-  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0IiwiZXhwIjoxNjk0MDI0NjM4fQ.s5zGvB0oPnTX5ycBy1U-7vGy22v2pUmbEPmsyHRL3DY'
+// /get_alert_foods'
+  
 // レスポンスはリストになって返ってくる.
 [
   {
@@ -269,4 +264,31 @@ classDiagram
     "name": "test2"
   }
 ]
+```
+
+----
+#### Food Registration page関連
+
+##### Post `/food_db`
+
+```
+// request
+{
+  "name": "test3",
+  "category": 1,
+  "price": 100,
+  "expiry_date": "2023-09-06",
+  "Date": "2023-09-06",
+  "amount": 2,
+  "unit": "0",
+  "memo": "no",
+  "Remaining": 2,
+  "status": 0
+}
+```
+```
+// response
+{
+  "message": "Food created successfully!"
+}
 ```
