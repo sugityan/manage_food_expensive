@@ -3,3 +3,6 @@ fastapi
 mysqlclient
 sqlalchemy
 PyMySQL
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
