@@ -22,19 +22,19 @@ import {
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
+  console.log(registerPopoverInput);
 
   const handleToggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  const handleRegisterPopoverInput = () => {
-    setRegisterPopoverInput(!registerPopoverInput);
-  };
+  // ポップオーバーの入力を処理
+  const handleRegisterPopoverInput = () => {};
 
   // データベースから取得
   const foodList = [
     { name: "トマト", color: "red", days: "期限切れ" },
-    { name: "キャベツ", color: "yellow", days: "1日" },
+    { name: "キャベツ", color: "red", days: "1日" },
     { name: "レタス", color: "blue", days: "2日" },
   ];
 
