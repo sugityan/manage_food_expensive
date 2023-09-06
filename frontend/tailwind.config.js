@@ -1,15 +1,26 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  purge: {
-    content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-    options: {
-      safelist: [],  
-    }
-  },
-  darkMode: false, 
+
+const withMT = require("@material-tailwind/react/utils/withMT");
+
+module.exports = withMT({
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {},
   },
-  variants: {},
   plugins: [],
-}
+});
+
+// module.exports = {
+//   purge: {
+//     content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+//     options: {
+//       safelist: [],
+//     },
+//   },
+//   darkMode: false,
+//   theme: {
+//     extend: {},
+//   },
+//   variants: {},
+//   plugins: [],
+// };
