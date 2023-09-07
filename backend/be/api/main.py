@@ -153,75 +153,37 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
     foods_list = []
     foods = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
     for food in foods:
-        tmp_food_dict = {}
-        remain_days = food.expiry_date - date.today()
-        if remain_days.days <= -1:
-            tmp_food_dict["Remaining_days"] = "期限切れ"
-        elif remain_days.days == 0:
-            tmp_food_dict["Remaining_days"] = "今日中"
+        if food.status == 0:
+            continue
         else:
-            tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
-        tmp_food_dict["name"] = food.name
-        tmp_food_dict["foodID"] = food.FoodID
-        foods_list.append(tmp_food_dict)
+            tmp_food_dict = {}
+            remain_days = food.expiry_date - date.today()
+            if remain_days.days <= -1:
+                tmp_food_dict["Remaining_days"] = "期限切れ"
+            elif remain_days.days == 0:
+                tmp_food_dict["Remaining_days"] = "今日中"
+            else:
+                tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
+            tmp_food_dict["name"] = food.name
+            tmp_food_dict["foodID"] = food.FoodID
+            foods_list.append(tmp_food_dict)
     # 残り日数で辞書をソート
     sorted_foods_list = sorted(foods_list, key=lambda x: x["Remaining_days"])
     return sorted_foods_list
 
-
-# 食材登録画面：食材登録
-@app.post("/food_db")
-async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current_user)):
-    try:
-        new_food = FoodTable(name=food.name,
-                        category=food.category,
-                        price=food.price,
-                        expiry_date=food.expiry_date,
-                        Date=food.Date,
-                        amount=food.amount,
-                        unit=food.unit,
-                        memo=food.memo,
-                        Remaining=food.Remaining,
-                        UserID=current_user.UserID,
-                        status=food.status)
-        session.add(new_food)
-        session.commit()
-    except Exception as e:
-        print("This is post /post_food error")
-        print(e)
-        raise HTTPException(
-            status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail="Can't post food data to db",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return {"message": "Food created successfully!"}
-
-# 食材alert画面：残量変更
-@app.patch("/food_db")
-async def fix_amount_food(food: FoodPatch, foodPost: FoodPost,current_user: loginUser = Depends(get_current_user)):
-            update_data = foodPost.dict(exclude_unset=True)
-
-            new_food = FoodTable(
-                            FoodID=food.foodID,
-                            Remaining=food.Remaining,
-                            UserID=current_user.UserID,
-                            status=food.status)
-            
-            session.commit()
-
-####################################################
-@app.put("/food_db/{foodid}")
-async def update_remaining(foodid: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
+# 食材編集画面：食材編集
+@app.put("/food_db/{FoodID}")
+async def update_remaining(FoodID: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
     try:
         # foodidで既存の食品レコードを検索
-        food_item = session.query(FoodTable).filter(FoodTable.foodid == foodid).first()
+        food_item = session.query(FoodTable).filter(FoodTable.FoodID == FoodID).first()
+        
         if not food_item:
             raise HTTPException(status_code=404, detail="Food not found")
 
         # Remaining フィールドを更新
         food_item.Remaining = remaining
         food_item.status = status
-
         # 変更をデータベースにコミット
         session.commit()
     except Exception as e:

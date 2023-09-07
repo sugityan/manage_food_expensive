@@ -15,9 +15,28 @@ const Home = () => {
     { name: "Category D", value: 150 },
     { name: "Category E", value: 100 },
   ];
+  const baseUrl = "http://127.0.0.1:8000";
 
   const foodPrice = 10000;
   const foodLoss = 10000;
+
+  // const handleGetChatData = async (event) => {
+
+  //   try {
+  //     const response = await axios.get(baseUrl + "/graph_data", {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         "Authorization": `Bearer ${localStorage.getItem("token")}`,
+  //       }
+  //     });
+  //     if (response.statusText === "OK") {
+  //       foodList = response.data
+  //     }
+      
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <>

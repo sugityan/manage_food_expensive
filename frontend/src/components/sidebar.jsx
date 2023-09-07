@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -22,64 +21,35 @@ import axios from "axios";
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  // 初期値はデータ取得の時に設定
-  const [remain, setRemain] = useState(null)
-  const [registerPopoverInput, setRegisterPopoverInput] = useState(true)
+  const [remain, setRemain] = useState(null);
+  const [foodList, setFoodList] = useState(null);
+  const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
   const baseUrl = "http://127.0.0.1:8000";
 
   const handleToggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  // ポップオーバーの入力を処理
-  // 記録を押したとき(残量変更のみ)
-  // TODO: FOODIDの定義
   const handleRegisterInput = async (food) => {
-    // apiにremainの内容をpostする処理
-      try {
-        const response = await axios.patch(baseUrl + `/food_db/${food.FoodID}`, {
-          Remaining : remain,
-          status: 1
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-            "Authorization": `Bearer ${localStorage.getItem("token")}`,
-          }
-        });
-        console.log(response);
-        if (response.statusText === "OK") {
-          // 記録成功
-          console.log("記録完了");
-          setRemain(null)
-        } else {
-          // apiからエラーが返ってくる
-          console.log("バックエンドからエラーが帰ってきてるよ");
-        }
-      } catch (error) {
-        console.log("通信失敗");
-      }
-  };
-
-  // 捨てるボタンを押した場合
-  const handleDiscardInput = async (food) => {
-    // apiにremainの内容をpostする処理
     try {
-      const response = await axios.patch(baseUrl + `/food_db/${food.FoodID}`, {
-        Remaining : remain,
-        status: 0
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.put(
+        baseUrl + `/food_db/${food.FoodID}`,
+        {
+          Remaining: remain,
+          status: 1,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
+      );
       console.log(response);
       if (response.statusText === "OK") {
-        // 廃棄成功
-        console.log("廃棄・使い切り完了");
-        setRemain(null)
+        console.log("記録完了");
+        setRemain(null);
       } else {
-        // apiからエラーが返ってくる
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
     } catch (error) {
@@ -87,34 +57,59 @@ const Sidebar = () => {
     }
   };
 
-  // データベースから食材リストを取得
-  const handleGetFoodList = async (event) => {
-    event.preventDefault();
-
+  const handleDiscardInput = async (food) => {
     try {
-      const response = await axios.get(baseUrl + "/get_alert_foods", {
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+      const response = await axios.put(
+        baseUrl + `/food_db/${food.FoodID}`,
+        {
+          Remaining: remain,
+          status: 0,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
-      });
-      console.log("sidebarのget_food_listのレスポンス");
+      );
       console.log(response);
       if (response.statusText === "OK") {
-        foodList = response.data
+        console.log("廃棄・使い切り完了");
+        setRemain(null);
+      } else {
+        console.log("バックエンドからエラーが帰ってきてるよ");
       }
-      
     } catch (error) {
-      console.error(error);
+      console.log("通信失敗");
+      console.error(error)
     }
   };
 
-  // データベースから取得
-  const foodList = [
-    { name: "トマト", color: "red", days: "期限切れ" },
-    { name: "キャベツ", color: "red", days: "1日" },
-    { name: "レタス", color: "blue", days: "2日" },
-  ];
+  useEffect(() => {
+    const fetchAlertFoods = async () => {
+      try {
+        const response = await axios.get(baseUrl + "/get_alert_foods", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        console.log("sidebarのget_food_listのレスポンス");
+        console.log(response);
+        if (response.statusText === "OK") {
+          console.log("通信成功");
+          console.log(response.data);
+          setFoodList(response.data);
+        } else {
+          console.log("バックエンドからのエラー");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchAlertFoods();
+  }, []);
 
   return (
     <Card
@@ -132,12 +127,7 @@ const Sidebar = () => {
           className={showSidebar ? "ml-auto" : "mr-auto"}
           onClick={handleToggleSidebar}
         >
-          {/* chromeで出るエラーはもともとのバグっぽい。無視しても正常に動く */}
-          {/* もし期限切れがあればbadgeを表示 */}
-          <Badge
-            overlap="circular"
-            invisible={true}
-          >
+          <Badge overlap="circular" invisible={false}>
             <IconButton>
               {showSidebar ? (
                 <ChevronDoubleLeftIcon className="h-4 w-4" />
@@ -150,55 +140,62 @@ const Sidebar = () => {
       </div>
       {showSidebar && (
         <List>
-          {foodList.map((food, index) => (
-            // もし最終的な残量率が記録されていれば見えないようにする。
-            // また、残量率が記録されていれば、その値を表示する。
-            <Popover key={index} placement="right">
-              <PopoverHandler>
-                <ListItem
-                  disabled={food.days === "期限切れ" ? true : false}
-                  className={
-                    food.days === "期限切れ"
-                      ? "red"
-                      : food.days === "今日中"
-                      ? "yellow"
-                      : "blue"
-                  }
-                >
-                  <Typography>{food.name}</Typography>
-                  <Chip
-                    value={food.days}
-                    size="sm"
-                    color={food.color}
-                    className="ml-auto"
-                  />
-                </ListItem>
-              </PopoverHandler>
-              <PopoverContent className="">
-                
+          {foodList ? (
+            foodList.map((food, index) => (
+              <Popover key={index} placement="right">
+                <PopoverHandler>
+                  <ListItem
+                    disabled={food.Remaining_days === "期限切れ" ? false : true}
+                  >
+                    <Typography>{food.name}</Typography>
+                    <Chip
+                      value={food.Remaining_days}
+                      size="sm"
+                      color={
+                        food.Remaining_days === "期限切れ"
+                          ? "red"
+                          : food.Remaining_days === "今日中"
+                          ? "yellow"
+                          : "blue"
+                      }
+                      className="ml-auto"
+                    />
+                  </ListItem>
+                </PopoverHandler>
+                <PopoverContent className="">
                   <>
                     <Typography variant="h6" color="blue-gray" className="mb-6">
                       残りどれくらい？
                     </Typography>
                     <div className="flex gap-2">
-                      <Input label="残量(%)" type="number" onChange={(event)=>setRemain(event.target.value)} />
+                      <Input
+                        label="残量(%)"
+                        type="number"
+                        onChange={(event) => setRemain(event.target.value)}
+                      />
                       <Button
                         variant="gradient"
+                        size="sm"
                         onClick={() => handleRegisterInput(food)}
+                        
                       >
                         記録
                       </Button>
                       <Button
                         variant="gradient"
+                        size="sm"
                         onClick={() => handleDiscardInput(food)}
                       >
                         捨てる
                       </Button>
                     </div>
                   </>
-              </PopoverContent>
-            </Popover>
-          ))}
+                </PopoverContent>
+              </Popover>
+            ))
+          ) : (
+            <Typography>Loading...</Typography>
+          )}
         </List>
       )}
     </Card>
