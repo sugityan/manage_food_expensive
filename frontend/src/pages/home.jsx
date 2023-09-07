@@ -44,6 +44,9 @@ const Home = () => {
 
     fetchAlertFoods();
   }, []);
+  const ShowCostGraph = dataDict.cost_graph !== 0;
+  const ShowRemainGraph = dataDict.remain_graph !== 0;
+  const ShowFoodlossGraph = dataDict.foodloss_graph !== 0;
 
   return (
     <>
@@ -73,9 +76,15 @@ const Home = () => {
               </a>
             </div>
           </div>
+          {ShowCostGraph && (
           <ShowPiChart data={dataDict.cost_graph} title="食費" />
+          )}
+          {ShowRemainGraph && (
           <ShowPiChart data={dataDict.remain_graph} title="残量率" />
+          )}
+          {ShowFoodlossGraph && (
           <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率" />
+          )}
         </div>
       </div>
     </>

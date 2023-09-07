@@ -445,12 +445,16 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
         total_remain_cost = 0
         for k, v in total_remain_cost_dict.items():
             total_remain_cost += v
-        for k, v in total_remain_cost_dict.items():
-            tmp_dict = {}
-            tmp_dict["category"] = category_list[k]
-            remain_rate = int(v*100/total_remain_cost)
-            tmp_dict["cost"] = remain_rate
-            total_remain_cost_list.append(tmp_dict)
+        if total_remain_cost == 0:
+            total_remain_cost_list = 0
+        else:
+            total_remain_cost_list = []
+            for k, v in total_remain_cost_dict.items():
+                tmp_dict = {}
+                tmp_dict["category"] = category_list[k]
+                remain_rate = int(v*100/total_remain_cost)
+                tmp_dict["cost"] = remain_rate
+                total_remain_cost_list.append(tmp_dict)
 
 
         # フードロス率
@@ -461,7 +465,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
                 remain_rate = food.Remaining
                 status = food.status
                 if status == 0 and remain_rate != 0:
-                    loss_cost = price * remain_rate
+                    loss_cost = int(price * remain_rate / 100)
                     if category in total_foodloss_cost_dict.keys():
                         total_foodloss_cost_dict[category] += loss_cost
                     else:
@@ -469,12 +473,16 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
         total_foodloss_cost = 0
         for k, v in total_foodloss_cost_dict.items():
             total_foodloss_cost += v
-        for k, v in total_foodloss_cost_dict.items():
-            tmp_dict = {}
-            tmp_dict["category"] = category_list[k]
-            foodloss_rate = int(v*100/total_foodloss_cost)
-            tmp_dict["cost"] = foodloss_rate
-            total_foodloss_cost_list.append(tmp_dict)
+        if total_foodloss_cost == 0:
+            total_foodloss_cost_list = 0
+        else:
+            total_foodloss_cost_list = []
+            for k, v in total_foodloss_cost_dict.items():
+                tmp_dict = {}
+                tmp_dict["category"] = category_list[k]
+                foodloss_rate = int(v*100/total_foodloss_cost)
+                tmp_dict["cost"] = foodloss_rate
+                total_foodloss_cost_list.append(tmp_dict)
 
         all_info_dict["monthly_cost"] = total_cost
         all_info_dict["monthly_foodloss"] = total_foodloss_cost
