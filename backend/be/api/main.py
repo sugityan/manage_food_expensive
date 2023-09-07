@@ -388,7 +388,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 @app.get("/graph_data")
 async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
     try:
-        all_info_list = []
+        all_info_dict = {}
         total_cost = 0
         total_cost_list = []
         total_cost_dict = {}
@@ -479,21 +479,12 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             tmp_dict["foodloss_rate"] = foodloss_rate
             total_foodloss_cost_list.append(tmp_dict)
 
-        tmp_dict = {}
-        tmp_dict["monthly_cost"] = total_cost
-        all_info_list.append(tmp_dict)
-        tmp_dict = {}
-        tmp_dict["monthly_foodloss"] = total_foodloss_cost
-        all_info_list.append(tmp_dict)
-        tmp_dict = {}
-        tmp_dict["cost_graph"] = total_cost_list
-        all_info_list.append(tmp_dict)
-        tmp_dict = {}
-        tmp_dict["remain_graph"] = total_remain_cost_list
-        all_info_list.append(tmp_dict)
-        tmp_dict = {}
-        tmp_dict["foodloss_graph"] = total_foodloss_cost_list
-        all_info_list.append(tmp_dict)
+        all_info_dict["monthly_cost"] = total_cost
+        all_info_dict["monthly_foodloss"] = total_foodloss_cost
+        all_info_dict["cost_graph"] = total_cost_list
+        all_info_dict["remain_graph"] = total_remain_cost_list
+        all_info_dict["foodloss_graph"] = total_foodloss_cost_list
+
     except Exception as e:
         print("This is post /post_food error")
         print(e)
@@ -502,7 +493,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             detail="Can't post shopping data to db",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return all_info_list
+    return all_info_dict
 
 
 # 門倉編集分
