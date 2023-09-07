@@ -35,3 +35,7 @@ pyvenv.cfg
 pip-selfcheck.json
 
 # End of https://www.toptal.com/developers/gitignore/api/react,venv,dotenv
+
+# cache
+backend/__pycache__
+backend/be/api/__pycache__
