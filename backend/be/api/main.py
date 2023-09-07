@@ -4,7 +4,7 @@ from db import session
 from model import *
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
-import datetime
+from datetime import datetime, date, timedelta
 from functions.login import *
 from functions.get_users import *
 from fastapi import Depends, HTTPException, status
@@ -33,7 +33,7 @@ def create_user(user: User):
         session.commit()
     except Exception as e:
         print(e)
-        return False
+        return e
 
     return {"message": "User created successfully!"}
 
@@ -69,7 +69,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-# ホーム画面,食材一覧画面: foodデータを取得
+# ホーム画面: foodデータを取得
 @app.get("/food_db")
 async def get_food_db(current_user: loginUser = Depends(get_current_user)):
     foods_dict = {}
@@ -97,8 +97,13 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
     foods = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
     for food in foods:
         tmp_food_dict = {}
-        remain_days = food.expiry_date - food.Date
-        tmp_food_dict["Remaining_days"] = remain_days.days
+        remain_days = food.expiry_date - date.today()
+        if remain_days.days <= -1:
+            tmp_food_dict["Remaining_days"] = "期限切れ"
+        elif remain_days.days == 0:
+            tmp_food_dict["Remaining_days"] = "今日中"
+        else:
+            tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
         tmp_food_dict["name"] = food.name
         foods_list.append(tmp_food_dict)
     # 残り日数で辞書をソート
@@ -193,6 +198,41 @@ async def get_cost_day(current_user: loginUser = Depends(get_current_user)):
         shopping_list.append(cost)
 
     return shopping_list
+
+
+# 食材一覧画面：食材情報一覧取得
+@app.get("/foods_info")
+def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
+    foods_list = []
+    # UserIdが一致する食材を取得
+    try:
+        foods_lists = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
+        for food in foods_lists:
+            tmp_food_dict = {}
+            # 残日数
+            remain_days = food.expiry_date - date.today()
+            if remain_days.days <= -1:
+                tmp_food_dict["Remaining_days"] = "期限切れ"
+            elif remain_days.days == 0:
+                tmp_food_dict["Remaining_days"] = "今日中"
+            else:
+                tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
+            tmp_food_dict["name"] = food.name
+            tmp_food_dict["category"] = food.category
+            tmp_food_dict["Remaining"] = food.Remaining
+            # 経過
+            elapsed_days = date.today() - food.Date
+            tmp_food_dict["Elapsed_days"] = str(elapsed_days.days) + "日"
+            foods_list.append(tmp_food_dict)
+    except Exception as e:
+        print("This is post /food_db error")
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Can't get food data from db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return foods_list
 
 
 # # 食材一覧画面：食材情報一覧取得
