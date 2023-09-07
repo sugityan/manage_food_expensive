@@ -293,7 +293,7 @@ async def get_cost_day(current_user: loginUser = Depends(get_current_user)):
             func.sum(ShoppingTable.Price).label("TotalShoppingPrice")).\
             filter(ShoppingTable.UserID == current_user.UserID).\
                 group_by(ShoppingTable.Date)
-        costs = session.query(
+        food_costs = session.query(
             FoodTable.Date, 
             func.sum(FoodTable.price).label("TotalFoodPrice")).\
             filter(FoodTable.UserID == current_user.UserID).\
