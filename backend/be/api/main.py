@@ -548,12 +548,17 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     else:
         foodcost = 0
     
-    if foodc_result:
-        foodloss = foodc_result.totalloss
+    if foodloss_result:
+        foodloss = foodloss_result.totalloss
     else:
         foodloss = 0
+
+    if foodc_result:
+        foodc = foodc_result.totalloss
+    else:
+        foodc = 0
     
-    foodcost += foodloss
+    foodcost += foodc
 
     foodcostRanking = "10万円~"
     if foodcost < 30000:
