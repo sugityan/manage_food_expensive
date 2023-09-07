@@ -587,7 +587,6 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
             FoodTable.expiry_date.between(
                 first_day_of_this_month, last_day_of_this_month
             ),
-            FoodTable.status == 0,
             FoodTable.Remaining != 0,
         )
         .group_by(FoodTable.UserID)
@@ -694,7 +693,6 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
             FoodTable.expiry_date.between(
                 first_day_of_this_month, last_day_of_this_month
             ),
-            FoodTable.status == 0,
             FoodTable.Remaining != 0,
         )
         .group_by(gen.c.UserID)
