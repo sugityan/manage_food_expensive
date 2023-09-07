@@ -215,6 +215,7 @@ async def update_remaining(alertFoodPut: FoodAlertPut, current_user: loginUser =
     return {"remaining": alertFoodPut.remaining, "status": alertFoodPut.status}
 
 
+
 # 食材編集画面：食材編集
 @app.put("/food_db")
 async def fix_food(food: FoodPost, foodID: int, current_user: loginUser = Depends(get_current_user)):
