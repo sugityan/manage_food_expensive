@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date,
 from pydantic import BaseModel
 from db import Base
 from db import ENGINE
-
+from datetime import date
 
 # テーブル定義
 class TestUserTable(Base):
@@ -17,16 +17,27 @@ class TestUserTable2(Base):
     name = Column(String(30), nullable=False)
     nickname = Column(String(128), nullable=False)
 
-class User(Base):
+
+class UserTable(Base):
     __tablename__ = "User"
 
     UserID = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    Password = Column(String(8), nullable=False)
+    Password = Column(String(255), nullable=False)
     p_num = Column(Integer, nullable=False)
     age = Column(Integer, nullable=False)
     Email = Column(String(255), nullable=False)
 
-class Shopping(Base):
+    def toDict(self):
+        return {
+            "UserID": self.UserID,
+            "Password": self.Password,
+            "p_num": self.p_num,
+            "age": self.age,
+            "Email": self.Email
+        }
+
+
+class ShoppingTable(Base):
     __tablename__ = "Shopping"
 
     ShoppingID = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -35,7 +46,7 @@ class Shopping(Base):
     Purpose = Column(Integer, nullable=False)
     Price = Column(Integer, nullable=False)
 
-class Food(Base):
+class FoodTable(Base):
     __tablename__ = "Food"
 
     FoodID = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -51,15 +62,86 @@ class Food(Base):
     Remaining = Column(Integer)
     status = Column(Integer, nullable=False)
 
+    def toDict(self):
+        return {
+            "FoodID": self.FoodID,
+            "UserID": self.UserID,
+            "name": self.name,
+            "category": self.category,
+            "price": self.price,
+            "expiry_date": self.expiry_date,
+            "Date": self.Date,
+            "amount": self.amount,
+            "unit": self.unit,
+            "memo": self.memo,
+            "Remaining": self.Remaining,
+            "status": self.status
+        }
+
+
 # モデル定義 
-class TestUser(BaseModel):
-    id: int
+class User(BaseModel):
+    Password: str
+    p_num: int
+    age: int
+    Email: str
+
+class loginUser(User):
+    UserID: int
+
+
+class Shopping(BaseModel):
+    ShoppingID: int
+    UserID: int
+    Date: date
+    Purpose: int
+    Price: int
+
+class Food(BaseModel):
+    FoodID: int
+    UserID: int
     name: str
-    email: str
+    category: int
+    price: int
+    expiry_date: date
+    Date: date
+    amount: int
+    unit: str
+    memo: str
+    Remaining: int
+    status: int
 
 class UserCreate(BaseModel):
     name: str
     email: str
+
+class UserNew(BaseModel):
+    Password: str
+    p_num: int
+    age: int
+    Email: str
+
+class ShoppingPost(BaseModel):
+    Date: date
+    Purpose: int
+    Price: int
+
+class FoodPost(BaseModel):
+    name: str
+    category: int
+    price: int
+    expiry_date: date
+    Date: date
+    amount: int
+    unit: str
+    memo: str
+    Remaining: int
+    status: int
+
+class CostByDate(BaseModel):
+    Date: date
+    Purpose: int
+    Price: int
 
 class EatoutData(BaseModel):
     date: str  # YYYY-MM-DD 形式の文字列
