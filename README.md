@@ -23,7 +23,7 @@
 ## SwaggerUIの起動(backend)
 1. cd backend
 2. cd be
-2. pip install -r requirement.txt
+2. pip install -r requirements.txt
 3. cd api
 4. uvicorn main:app --reload
 
