@@ -133,8 +133,8 @@ class FoodPost(BaseModel):
     name: str
     category: int
     price: int
-    expiry_date: date
-    Date: date
+    expiry_date: str
+    Date: str
     amount: int
     unit: str
     memo: str

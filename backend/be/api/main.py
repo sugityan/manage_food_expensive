@@ -135,7 +135,7 @@ async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current
         print(e)
         raise HTTPException(
             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-            detail="Can't post food data to db",
+            detail="Can't post food data to db: ",
             headers={"WWW-Authenticate": "Bearer"},
         )
     return {"message": "Food created successfully!"}

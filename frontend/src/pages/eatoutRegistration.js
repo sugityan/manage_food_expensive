@@ -2,8 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
-import { useNavigate } from "react-router-dom";
-// import { useToasts } from 'react-toast-notifications';
+import { useNavigate } from "react-router-dom";;
 
 
 function EatoutRegistration() {
@@ -15,7 +14,7 @@ function EatoutRegistration() {
   });
   const [result, setResult] = useState(null);
   const navigate = useNavigate();
-  // const { addToast } = useToasts();
+
 
 
   const handleChange = (event) => {
@@ -43,7 +42,6 @@ function EatoutRegistration() {
       );
       if (response.status === 200) {
         setResult(response.data.result);
-        // addToast('通信が成功しました', { appearance: 'success' }); // 成功通知
         navigate("/home"); // /homeにリダイレクト
       } else {
         console.error("Error sending data:", response.data);

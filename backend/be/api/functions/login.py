@@ -13,7 +13,7 @@ from fastapi.security import OAuth2PasswordBearer
 # openssl rand -hex 32
 SECRET_KEY = "de77a09cf337758ac4ebc6060bf589a9f8ed48605b0276aecabd7043f74e2d75"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30 # 30分間トークンが有効
+ACCESS_TOKEN_EXPIRE_MINUTES = 120 # 120分間トークンが有効
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
