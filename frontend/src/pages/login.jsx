@@ -1,14 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
 import axios from "axios";
+
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const [isFailPopupOpen, setIsFailPopupOpen] = useState(false);
+  const [failAuthorizePopupOpen, setFailAuthorizePopupOpen] = useState(false);
   const baseUrl = "http://127.0.0.1:8000";
+
+  // Timerでポップアップを消す
+  // ポップアップを表示させた場合、5秒後に非表示にする
+  useEffect(() => {
+    if (failAuthorizePopupOpen) {
+      const timer = setTimeout(() => {
+        setFailAuthorizePopupOpen(false);
+      }, 3000); // 3秒（3000ミリ秒）後に非表示にする
+      return () => clearTimeout(timer); // コンポーネントがアンマウントされたらタイマーをクリア
+    }
+  }, [failAuthorizePopupOpen]);
+  
+
+
   //   ログイン処理
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -30,19 +47,35 @@ const Login = () => {
         // ログイン成功
         console.log("ログイン成功");
         localStorage.setItem("token", response.data["access_token"])
-        
+        // ログイン成功ポップアップを表示
         navigate("/home"); // /homeにリダイレクト
       } else {
+        setIsFailPopupOpen(true);
         // ログイン失敗
         console.log("ログイン失敗");
       }
     } catch (error) {
-      console.error(error);
+      if (error.response.status === 401) {
+        setFailAuthorizePopupOpen(true);
+      } else {
+        setIsFailPopupOpen(true);
+        console.error(error);
+      }
     }
   };
 
   return (
     <div className="flex justify-center items-center h-screen">
+          {isFailPopupOpen && (
+                <div className="bg-red-200 text-red-700 p-5 rounded-md absolute top-20 left-1/2 transform -translate-x-1/2">
+                ログインに失敗しました！
+            </div>)}
+          {failAuthorizePopupOpen && (
+                  <div className="bg-red-200 text-red-700 p-5 rounded-md absolute top-20 left-1/2 transform -translate-x-1/2">
+                  パスワードもしくはメールアドレスが間違っています！
+                </div>
+          )}
+
       <Card color="transparent" shadow={false}>
         <Typography variant="h4" color="blue-gray">
           Login
