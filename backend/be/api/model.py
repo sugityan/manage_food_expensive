@@ -125,7 +125,7 @@ class UserNew(BaseModel):
     Email: str
 
 class ShoppingPost(BaseModel):
-    Date: date
+    Date: str
     Purpose: int
     Price: int
 

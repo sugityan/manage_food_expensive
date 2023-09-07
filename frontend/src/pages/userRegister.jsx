@@ -1,6 +1,7 @@
 import { Button, Card, Input, Typography } from "@material-tailwind/react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const UserRegister = () => {
   const [email, setEmail] = useState("");
@@ -15,12 +16,22 @@ const UserRegister = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch(baseUrl + "/create_user", {
-        method: "POST",
+      // const response = await fetch(baseUrl + "/create_user", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ email, password, age, household }),
+      // });
+      const response = await axios.post(baseUrl + "/create_user", {
+        password: password,
+        household: household,
+        age: age,
+        email: email,
+      },{
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, age, household }),
       });
 
       //   response.okはレスポンスが200番台かどうかを判定する
@@ -28,6 +39,8 @@ const UserRegister = () => {
       //   ユーザーIDはどうやって引き継ぐ？
       if (response.statusText === "OK") {
         // ログイン成功
+        console.log(response)
+        console.log(response.data)
         console.log("ログイン成功");
         localStorage.setItem("token", response.data["access_token"])
         

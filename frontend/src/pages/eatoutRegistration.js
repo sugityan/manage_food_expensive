@@ -2,14 +2,21 @@ import axios from "axios";
 import React, { useState } from "react";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
+import { useNavigate } from "react-router-dom";
+// import { useToasts } from 'react-toast-notifications';
+
 
 function EatoutRegistration() {
+  const baseUrl = "http://127.0.0.1:8000";
   const [formData, setFormData] = useState({
     date: "",
     price: "",
     purpose: "0",
   });
   const [result, setResult] = useState(null);
+  const navigate = useNavigate();
+  // const { addToast } = useToasts();
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -20,14 +27,24 @@ function EatoutRegistration() {
     event.preventDefault();
 
     try {
+      
       const response = await axios.post(
-        "http://127.0.0.1:8000/eatout_register",
-        formData
+        baseUrl + "/shopping",{
+          Date: formData.date,
+          Purpose: formData.purpose,
+          Price: formData.price,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        }
       );
-
       if (response.status === 200) {
-        console.log("Data sent successfully");
         setResult(response.data.result);
+        // addToast('通信が成功しました', { appearance: 'success' }); // 成功通知
+        navigate("/home"); // /homeにリダイレクト
       } else {
         console.error("Error sending data:", response.data);
       }

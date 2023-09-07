@@ -35,13 +35,6 @@ async def create_user(user: User):
                       age=user.age, Email=user.email)
         session.add(actual_db_item)
         session.commit()
-        
-        # tokenの期限を設定
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        # tokenの作成
-        access_token = create_access_token(
-            data={"sub": user.email}, expires_delta=access_token_expires
-            )
     except Exception as e:
         print(e)
         raise HTTPException(
@@ -49,23 +42,16 @@ async def create_user(user: User):
             detail="Something wrong with user data",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
-
-
-    return {"message": "User created successfully!"}
-
-# async def return_map_values():
-#     get => food_db;
-
-#     # 計算式
-
-
-    return {"token": access_token,  "token_type": "bearer"}
+    # tokenの期限を設定
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # tokenの作成
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+        )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 # ログイン画面：　ログイン
 @app.post("/login", response_model=Token)
-# TODO: form_data => json from frontend input
-# async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
 async def login_for_access_token(form_data: Login):
 # async def login_for_access_token(user: Login):
     print("login_for_access_token api message")
@@ -261,10 +247,11 @@ async def fix_food(food: FoodPost, foodID: int, current_user: loginUser = Depend
 @app.post("/shopping")
 async def add_shopping(shopping: ShoppingPost, current_user: loginUser = Depends(get_current_user)):
     try:
-        new_cost = ShoppingTable(Date=shopping.Date,
-                            Purpose=shopping.Purpose,
-                            Price=shopping.Price,
-                            UserID=current_user.UserID)
+        new_cost = ShoppingTable(
+            Date=shopping.Date,
+            Purpose=shopping.Purpose,
+            Price=shopping.Price,
+            UserID=current_user.UserID)
         session.add(new_cost)
         session.commit()
 
@@ -277,6 +264,21 @@ async def add_shopping(shopping: ShoppingPost, current_user: loginUser = Depends
             headers={"WWW-Authenticate": "Bearer"},
         )
     return {"message": "shopping created successfully!"}
+
+# @app.post("/eatout_register")  # 適切なエンドポイント名に置き換えてください
+# async def receive_data(data: EatoutData):
+#     # 受け取ったデータをそれぞれの変数に格納
+#     received_date = data.date
+#     received_price = data.price
+#     received_purpose = data.purpose
+
+#     # ここで受け取ったデータを使って何かを実行できます。
+#     # 今回はデモのため、受け取ったデータをそのままレスポンスとして返します。
+#     return {
+#         "received_date": received_date,
+#         "received_price": received_price,
+#         "received_purpose": received_purpose
+#     }
 
 
 # 食費一覧画面：食費取得
@@ -701,20 +703,7 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
 
 
-# @app.post("/eatout_register")  # 適切なエンドポイント名に置き換えてください
-# async def receive_data(data: EatoutData):
-#     # 受け取ったデータをそれぞれの変数に格納
-#     received_date = data.date
-#     received_price = data.price
-#     received_purpose = data.purpose
 
-#     # ここで受け取ったデータを使って何かを実行できます。
-#     # 今回はデモのため、受け取ったデータをそのままレスポンスとして返します。
-#     return {
-#         "received_date": received_date,
-#         "received_price": received_price,
-#         "received_purpose": received_purpose
-#     }
 
 # @app.post("/eatout_register")
 # async def add_data(data: EatoutData):
