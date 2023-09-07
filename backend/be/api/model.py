@@ -60,7 +60,7 @@ class FoodTable(Base):
     unit = Column(String(255))
     memo = Column(String(255))
     Remaining = Column(Integer)
-    status = Column(Integer, nullable=False)
+    status = Column(Integer, nullable=False) 
 
     def toDict(self):
         return {
@@ -81,14 +81,17 @@ class FoodTable(Base):
 
 # モデル定義 
 class User(BaseModel):
-    Password: str
-    p_num: int
+    password: str
+    household: int
     age: int
-    Email: str
+    email: str
 
 class loginUser(User):
     UserID: int
 
+class Login(BaseModel):
+    email: str
+    password: str
 
 class Shopping(BaseModel):
     ShoppingID: int

@@ -18,11 +18,11 @@ import {
   ChevronDoubleRightIcon,
   ChevronDoubleLeftIcon,
 } from "@heroicons/react/24/solid";
+import axios from "axios";
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
-  console.log(registerPopoverInput);
+  const [registerPopoverInput, setRegisterPopoverInput] = useState(true)
 
   const handleToggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -104,6 +104,12 @@ const Sidebar = () => {
                         onClick={() => handleRegisterPopoverInput()}
                       >
                         OK
+                      </Button>
+                      <Button
+                        variant="gradient"
+                        onClick={() => handleRegisterPopoverInput()}
+                      >
+                        捨てる
                       </Button>
                     </div>
                   </>

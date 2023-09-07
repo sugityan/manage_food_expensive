@@ -23,7 +23,7 @@
 ## SwaggerUIの起動(backend)
 1. cd backend
 2. cd be
-2. pip install -r requirement.txt
+2. pip install -r requirements.txt
 3. cd api
 4. uvicorn main:app --reload
 
@@ -154,8 +154,8 @@ classDiagram
 | amount | 量/個数 | int(11) |
 | unit | 単位 | varchar(255) |
 | memo | メモ | varchar(255) |
-| Remaining | 残り | int(11) |
-| status | 消費したかどうかの状況(0 or 1) | int(11) |
+| Remaining | 残り(%) | int(11) |
+| status | 消費したかどうかの状況(0 or 1) 0がない状態, 1がある状態| int(11) |
 
 ---
 #### Shoppingテーブル
