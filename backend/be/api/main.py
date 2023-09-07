@@ -515,10 +515,44 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         ShoppingTable.UserID
     ).first()
 
+    # その人のフードロス計算
+    foodloss_subquery = session.query(
+        FoodTable.UserID,
+        (FoodTable.Remaining * FoodTable.price / 100).label('loss_value')
+    ).filter(
+        FoodTable.UserID == current_user.UserID,
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month),
+        FoodTable.status == 0,
+        FoodTable.Remaining != 0
+    ).subquery()
+
+    # サブクエリを使用してUserIDごとに合計を計算します
+    foodloss_result = session.query(
+        foodloss_subquery.c.UserID,
+        func.sum(foodloss_subquery.c.loss_value).label('totalloss')
+    ).group_by(
+        foodloss_subquery.c.UserID
+    ).first()
+    # foodloss_result = session.query(FoodTable.UserID, func.sum(FoodTable.price).label("totalloss")).filter(
+    #     FoodTable.UserID == current_user.UserID,
+    #     FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
+    #     FoodTable.status == 0,
+    #     FoodTable.Remaining != 0
+    # ).group_by(
+    #     FoodTable.UserID
+    # ).first()
+
     if foodcost_result:
         foodcost = foodcost_result.totalcost
     else:
         foodcost = 0
+    
+    if foodloss_result:
+        foodloss = foodloss_result.totalloss
+    else:
+        foodloss = 0
+    
+    foodcost += foodloss
 
     foodcostRanking = "10万円~"
     if foodcost < 30000:
@@ -537,33 +571,18 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         foodcostRanking = "10万円~"
 
 
-    # その人のフードロス計算
-    foodloss_result = session.query(FoodTable.UserID, func.sum(FoodTable.price).label("totalloss")).filter(
-        FoodTable.UserID == current_user.UserID,
-        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
-        FoodTable.status == 0,
-        FoodTable.Remaining != 0
-    ).group_by(
-        FoodTable.UserID
-    ).first()
-
-    if foodloss_result:
-        foodloss = foodloss_result.totalloss
-    else:
-        foodloss = 0
-
     foodlossPosition = "1万円~"
     if foodloss < 1000:
         foodlossPosition = "~千円"
-    elif foodloss >= 1000 and foodcost < 2000:
+    elif foodloss >= 1000 and foodloss < 2000:
         foodlossPosition = "1~2千円"
-    elif foodloss >= 2000 and foodcost < 3000:
+    elif foodloss >= 2000 and foodloss < 3000:
         foodlossPosition = "2~3千円"
-    elif foodloss >= 3000 and foodcost < 5000:
+    elif foodloss >= 3000 and foodloss < 5000:
         foodlossPosition = "3~5千円"
-    elif foodloss >= 5000 and foodcost < 7000:
+    elif foodloss >= 5000 and foodloss < 7000:
         foodlossPosition = "5~7千円"
-    elif foodloss >= 7000 and foodcost < 10000:
+    elif foodloss >= 7000 and foodloss < 10000:
         foodlossPosition = "7千~1万円"
     else:
         foodlossPosition = "1万円~"
@@ -587,6 +606,64 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     # 同年代のユーザーIDを集める
     gen = session.query(UserTable.UserID).filter(UserTable.age.between(min_age, max_age)).subquery()
     
+    # フードロスのグラフように分類
+    sub = session.query(gen.c.UserID,(FoodTable.Remaining * FoodTable.price / 100).label('loss_value')).join(
+        FoodTable, gen.c.UserID == FoodTable.UserID
+    ).filter(
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
+        FoodTable.status == 0,
+        FoodTable.Remaining != 0
+    ).subquery()
+
+    foodloss_result = session.query(
+        sub.c.UserID,
+        func.sum(sub.c.loss_value).label('total')
+    ).group_by(
+        sub.c.UserID
+    ).subquery()
+    # a = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
+    #     FoodTable, gen.c.UserID == FoodTable.UserID
+    # ).filter(
+    #     FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
+    #     FoodTable.status == 0,
+    #     FoodTable.Remaining != 0
+    # ).group_by(
+    #     gen.c.UserID
+    # ).subquery()
+
+
+    record = session.query(
+        case(
+            (foodloss_result.c.total < 1000, "~千円"),
+            ((foodloss_result.c.total >= 1000) & (foodloss_result.c.total < 2000), "1~2千円"),
+            ((foodloss_result.c.total >= 2000) & (foodloss_result.c.total < 3000), "2~3千円"),
+            ((foodloss_result.c.total >= 3000) & (foodloss_result.c.total < 5000), "3~5千円"),
+            ((foodloss_result.c.total >= 5000) & (foodloss_result.c.total < 7000), "5~7千円"),
+            ((foodloss_result.c.total >= 7000) & (foodloss_result.c.total < 10000), "7千~1万円"),
+            else_="1万円~"
+        ).label("name"),
+        func.count().label("number")
+    ).group_by("name").all()
+
+    loss_ranges = [
+        "~千円",
+        "1~2千円",
+        "2~3千円",
+        "3~5千円",
+        "5~7千円",
+        "7千~1万円",
+        "1万円~"
+    ]
+    record_dict = {item[0]: item[1] for item in record}
+    # 最終結果のリストを作成します。
+    foodlossData = [
+        {
+            "name": loss_range,
+            "number": record_dict.get(loss_range, 0)  # 辞書から価格範囲の数を取得、存在しない場合は0を使用。
+        } 
+        for loss_range in loss_ranges
+    ]
+
     # 食費のグラフ用に分類
     b = session.query(gen.c.UserID, func.sum(ShoppingTable.Price).label("total")).join(
         ShoppingTable, gen.c.UserID == ShoppingTable.UserID
@@ -595,24 +672,28 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     ).group_by(
         gen.c.UserID
     ).subquery()
-    print("------------------")
-    print("THIS is foodcost_result: ", b)
-    print("THIS is foodcost_result: ", b.c.total)
-    print("------------------")
+
+    combined_query = session.query(
+        b.c.UserID,
+        (b.c.total + foodloss_result.c.total).label("total")
+    ).join(
+        foodloss_result, b.c.UserID == foodloss_result.c.UserID
+    ).subquery()
+
     record = session.query(
         case(
-            (b.c.total < 30000, "~3万円"),
-            ((b.c.total >= 30000) & (b.c.total < 40000), "3~4万円"),
-            ((b.c.total >= 40000) & (b.c.total < 50000), "4~5万円"),
-            ((b.c.total >= 50000) & (b.c.total < 60000), "5~6万円"),
-            ((b.c.total >= 60000) & (b.c.total < 80000), "6~8万円"),
-            ((b.c.total >= 80000) & (b.c.total < 100000), "8~10万円"),
+            (combined_query.c.total < 30000, "~3万円"),
+            ((combined_query.c.total >= 30000) & (combined_query.c.total < 40000), "3~4万円"),
+            ((combined_query.c.total >= 40000) & (combined_query.c.total < 50000), "4~5万円"),
+            ((combined_query.c.total >= 50000) & (combined_query.c.total < 60000), "5~6万円"),
+            ((combined_query.c.total >= 60000) & (combined_query.c.total < 80000), "6~8万円"),
+            ((combined_query.c.total >= 80000) & (combined_query.c.total < 100000), "8~10万円"),
             else_="10万円~"
         ).label("name"),
         func.count().label("number")
     ).group_by("name").all()
 
-    record_dict = {item[0]: item[1] for item in record}
+
 
     price_ranges = [
     "~3万円",
@@ -632,49 +713,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         for price_range in price_ranges
     ]
 
-    # フードロスのグラフように分類
-    a = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
-        FoodTable, gen.c.UserID == FoodTable.UserID
-    ).filter(
-        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
-        FoodTable.status == 0,
-        FoodTable.Remaining != 0
-    ).group_by(
-        gen.c.UserID
-    ).subquery()
 
-
-    record = session.query(
-        case(
-            (b.c.total < 1000, "~千円"),
-            ((b.c.total >= 1000) & (b.c.total < 2000), "1~2千円"),
-            ((b.c.total >= 2000) & (b.c.total < 3000), "2~3千円"),
-            ((b.c.total >= 3000) & (b.c.total < 5000), "3~5千円"),
-            ((b.c.total >= 5000) & (b.c.total < 7000), "5~7千円"),
-            ((b.c.total >= 7000) & (b.c.total < 10000), "7千~1万円"),
-            else_="1万円~"
-        ).label("name"),
-        func.count().label("number")
-    ).group_by("name").all()
-
-    loss_ranges = [
-        "~千円",
-        "1~2千円",
-        "2~3千円",
-        "3~5千円",
-        "5~7千円",
-        "7千~1万円",
-        "1万円~"
-    ]
-
-    # 最終結果のリストを作成します。
-    foodlossData = [
-        {
-            "name": loss_range,
-            "number": record_dict.get(loss_range, 0)  # 辞書から価格範囲の数を取得、存在しない場合は0を使用。
-        } 
-        for loss_range in loss_ranges
-    ]
 
     result = {
         "foodcostRanking" : foodcostRanking,
