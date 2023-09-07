@@ -26,7 +26,7 @@ app.add_middleware(
 
 # ユーザ登録画面: ユーザ情報登録
 @app.post("/create_user")
-def create_user(user: User):
+async def create_user(user: User):
     try:
         actual_db_item = \
         UserTable(Password=get_password_hash(user.password),\
@@ -235,7 +235,7 @@ async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current
 
 # 食材編集画面：食材編集
 @app.put("/food_db")
-def fix_food(food: FoodPost, foodID: int, current_user: loginUser = Depends(get_current_user)):
+async def fix_food(food: FoodPost, foodID: int, current_user: loginUser = Depends(get_current_user)):
     try:
         foods_lists = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID).\
             filter(FoodTable.FoodID == foodID).first()
@@ -281,28 +281,79 @@ async def add_shopping(shopping: ShoppingPost, current_user: loginUser = Depends
         )
     return {"message": "shopping created successfully!"}
 
+
+# 食費一覧画面：食費取得
 @app.get("/shopping_by_day")
 async def get_cost_day(current_user: loginUser = Depends(get_current_user)):
-    shopping_list = []
-    
-    
-    costs = session.query(ShoppingTable.Date, ShoppingTable.Purpose, func.sum(ShoppingTable.Price)).\
-        filter(ShoppingTable.UserID == current_user.UserID).\
-            group_by(ShoppingTable.Date, ShoppingTable.Purpose)
-    for cost in costs:
-        shopping_list.append(cost)
+    try:
+        shopping_list = []
+        #shopping_all_dict = {}
+        total_cost = 0
+        shopping_costs = session.query(
+            ShoppingTable.Date, 
+            func.sum(ShoppingTable.Price).label("TotalShoppingPrice")).\
+            filter(ShoppingTable.UserID == current_user.UserID).\
+                group_by(ShoppingTable.Date)
+        food_costs = session.query(
+            FoodTable.Date, 
+            func.sum(FoodTable.price).label("TotalFoodPrice")).\
+            filter(FoodTable.UserID == current_user.UserID).\
+                group_by(FoodTable.Date)
+        this_month = str(date.today())[:7]
 
+        for i in range(1, 31):
+            year = int(this_month[:4])
+            month = int(this_month[5:7])
+            tmp_date = date(year, month, i)
+            tmp_dict = {}
+
+            for shop_dict in shopping_costs:
+                if tmp_date == shop_dict["Date"]:
+                    tmp_dict["date"] = tmp_date
+                    tmp_dict["shopping"] = shop_dict["TotalShoppingPrice"]
+            for food_dict in food_costs:
+                if tmp_date == food_dict["Date"]:
+                    if tmp_dict != {}:
+                        tmp_dict["eatout"] = food_dict["TotalFoodPrice"]
+                    else:
+                        tmp_dict["date"] = tmp_date
+                        tmp_dict["eatout"] = food_dict["TotalFoodPrice"]
+
+            if "date" in tmp_dict.keys():
+                sum = 0
+                if "shopping" in tmp_dict.keys():
+                    sum += tmp_dict["shopping"]
+                else:
+                    tmp_dict["shopping"] = 0
+                if "eatout" in tmp_dict.keys():
+                    sum += tmp_dict["eatout"]
+                else:
+                    tmp_dict["eatout"] = 0
+                tmp_dict["sum"] = sum
+                total_cost += sum
+                shopping_list.append(tmp_dict)
+        shopping_list.insert(0, total_cost)
+    except Exception as e:
+        print("This is post /post_food error")
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Can't post shopping data to db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return shopping_list
 
 
 # 食材一覧画面：食材情報一覧取得
 @app.get("/foods_info")
-def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
+async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     foods_list = []
     # UserIdが一致する食材を取得
     try:
         foods_lists = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
         for food in foods_lists:
+            if food.status == 0:
+                continue
             tmp_food_dict = {}
             # 残日数
             remain_days = food.expiry_date - date.today()
@@ -328,6 +379,128 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
             headers={"WWW-Authenticate": "Bearer"},
         )
     return foods_list
+
+
+
+# ホーム画面: グラフデータを取得
+@app.get("/graph_data")
+async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
+    try:
+        all_info_list = []
+        total_cost = 0
+        total_cost_list = []
+        total_cost_dict = {}
+        total_remain_cost_dict = {}
+        total_remain_cost_list = []
+        total_foodloss_cost_dict = {}
+        total_foodloss_cost_list = []
+        category_list = ["その他", "野菜", "肉", "魚", "穀物", "調味料", "加工食品", "飲料水"]
+
+        shopping_costs = session.query(
+            ShoppingTable.Date, 
+            func.sum(ShoppingTable.Price).label("TotalShoppingPrice")).\
+            filter(ShoppingTable.UserID == current_user.UserID).\
+                group_by(ShoppingTable.Date)
+        food_lists = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
+        this_month = str(date.today())[:7]
+
+        # 支出グラフ
+        # 外食費の合計
+        total_eatout_cost = 0
+        for shop_dict in shopping_costs:
+            if this_month == str(shop_dict["Date"])[:7]:
+                total_eatout_cost += shop_dict["TotalShoppingPrice"]
+        tmp_dict = {}
+        tmp_dict["category"] = "外食"
+        tmp_dict["cost"] = total_eatout_cost
+        total_cost_list.append(tmp_dict)
+        total_cost += total_eatout_cost
+        # 食費の合計
+        for food in food_lists:
+            if this_month == str(food.Date)[:7]:
+                category = food.category
+                if category in total_cost_dict.keys():
+                    total_cost_dict[category] += food.price
+                else:
+                    total_cost_dict[category] = food.price
+        for k, v in total_cost_dict.items():
+            tmp_dict = {}
+            tmp_dict["category"] = category_list[k]
+            tmp_dict["cost"] = v
+            total_cost += v
+            total_cost_list.append(tmp_dict)
+        
+        # 残量率
+        # カテゴリーごとの残量金額の算出
+        for food in food_lists:
+            if food.status == 1:
+                category = food.category
+                price = food.price
+                remain_rate = food.Remaining
+                remain_price = int(price * remain_rate / 100)
+                if category in total_remain_cost_dict.keys():
+                    total_remain_cost_dict[category] += remain_price
+                else:
+                    total_remain_cost_dict[category] = remain_price
+        # 残量率の算出
+        total_remain_cost = 0
+        for k, v in total_remain_cost_dict.items():
+            total_remain_cost += v
+        for k, v in total_remain_cost_dict.items():
+            tmp_dict = {}
+            tmp_dict["category"] = category_list[k]
+            remain_rate = int(v*100/total_remain_cost)
+            tmp_dict["remain_rate"] = remain_rate
+            total_remain_cost_list.append(tmp_dict)
+
+
+        # フードロス率
+        for food in food_lists:
+            if this_month == str(food.expiry_date)[:7]:
+                category = food.category
+                price = food.price
+                remain_rate = food.Remaining
+                status = food.status
+                if status == 0 and remain_rate != 0:
+                    loss_cost = price * remain_rate
+                    if category in total_foodloss_cost_dict.keys():
+                        total_foodloss_cost_dict[category] += loss_cost
+                    else:
+                        total_foodloss_cost_dict[category] = loss_cost
+        total_foodloss_cost = 0
+        for k, v in total_foodloss_cost_dict.items():
+            total_foodloss_cost += v
+        for k, v in total_foodloss_cost_dict.items():
+            tmp_dict = {}
+            tmp_dict["category"] = category_list[k]
+            foodloss_rate = int(v*100/total_foodloss_cost)
+            tmp_dict["foodloss_rate"] = foodloss_rate
+            total_foodloss_cost_list.append(tmp_dict)
+
+        tmp_dict = {}
+        tmp_dict["monthly_cost"] = total_cost
+        all_info_list.append(tmp_dict)
+        tmp_dict = {}
+        tmp_dict["monthly_foodloss"] = total_foodloss_cost
+        all_info_list.append(tmp_dict)
+        tmp_dict = {}
+        tmp_dict["cost_graph"] = total_cost_list
+        all_info_list.append(tmp_dict)
+        tmp_dict = {}
+        tmp_dict["remain_graph"] = total_remain_cost_list
+        all_info_list.append(tmp_dict)
+        tmp_dict = {}
+        tmp_dict["foodloss_graph"] = total_foodloss_cost_list
+        all_info_list.append(tmp_dict)
+    except Exception as e:
+        print("This is post /post_food error")
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Can't post shopping data to db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return all_info_list
 
 
 # # 食材一覧画面：食材情報一覧取得
