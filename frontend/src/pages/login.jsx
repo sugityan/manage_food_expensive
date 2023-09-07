@@ -14,7 +14,7 @@ const Login = () => {
     event.preventDefault();
 
     try {
-      const response = await axios.post(baseUrl + '/token', {
+      const response = await axios.post(baseUrl + '/login', {
         email: email,
         password: password,
       }, {

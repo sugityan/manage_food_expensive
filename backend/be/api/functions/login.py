@@ -58,7 +58,7 @@ def authenticate_user(users_db, username: str, password: str):
     # passwordが違えば、errorが起きるようにする
     # TODO: make user type to User Table
     # user["Password"] => user.Password
-    if not verify_password(password, user["Password"]):
+    if not verify_password(password, user["password"]):
         print("Password is incorrect")
         return False
     return user

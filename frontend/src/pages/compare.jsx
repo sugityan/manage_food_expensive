@@ -24,6 +24,7 @@ const foodlossData = [
   { name: "5000", number: 1 },
 ];
 
+
 const foodlossPosition = "1000";
 const foodloss = 5000;
 const foodcostData = [

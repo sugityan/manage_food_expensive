@@ -30,10 +30,10 @@ class UserTable(Base):
     def toDict(self):
         return {
             "UserID": self.UserID,
-            "Password": self.Password,
-            "p_num": self.p_num,
+            "password": self.Password,
+            "household": self.p_num,
             "age": self.age,
-            "Email": self.Email
+            "email": self.Email
         }
 
 
@@ -139,6 +139,11 @@ class FoodPost(BaseModel):
     unit: str
     memo: str
     Remaining: int
+    status: int
+
+class FoodPatch(BaseModel):
+    foodID: int
+    remaining: int
     status: int
 
 class CostByDate(BaseModel):

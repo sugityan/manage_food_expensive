@@ -62,7 +62,7 @@ def create_user(user: User):
     return {"token": access_token,  "token_type": "bearer"}
 
 # ログイン画面：　ログイン
-@app.post("/token", response_model=Token)
+@app.post("/login", response_model=Token)
 # TODO: form_data => json from frontend input
 # async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
 async def login_for_access_token(form_data: Login):
@@ -77,6 +77,37 @@ async def login_for_access_token(form_data: Login):
         print("Login api error")
         print(e)
     user = authenticate_user(users_db, form_data.email, form_data.password)
+    if not user: # When user is False, return HTTPException
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    # tokenの期限を設定
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    # tokenの作成
+    access_token = create_access_token(
+        # TODO: make user type to User Table
+        # user["user"] => user.Email
+        data={"sub": user["email"]}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+# swaggerUI: tokenの確認
+@app.post("/token", response_model=Token)
+# TODO: form_data => json from frontend input
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    print("login_for_access_token api message")
+    print("TODO: change form_data to json from frontend input")
+    # Get users from mysql db:
+    try:
+        users_db = get_users_dict()
+    except Exception as e:
+        print("This is post /token error")
+        print("Login api error")
+        print(e)
+    user = authenticate_user(users_db, form_data.username, form_data.password)
     if not user: # When user is False, return HTTPException
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -130,6 +161,7 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
         else:
             tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
         tmp_food_dict["name"] = food.name
+        tmp_food_dict["foodID"] = food.FoodID
         foods_list.append(tmp_food_dict)
     # 残り日数で辞書をソート
     sorted_foods_list = sorted(foods_list, key=lambda x: x["Remaining_days"])
@@ -162,6 +194,44 @@ async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current
             headers={"WWW-Authenticate": "Bearer"},
         )
     return {"message": "Food created successfully!"}
+
+# # 食材alert画面：残量変更
+# @app.patch("/food_db")
+# async def fix_amount_food(food: FoodPatch, foodPost: FoodPost,current_user: loginUser = Depends(get_current_user)):
+#             update_data = foodPost.dict(exclude_unset=True)
+
+#             new_food = FoodTable(
+#                             FoodID=food.foodID,
+#                             Remaining=food.Remaining,
+#                             UserID=current_user.UserID,
+#                             status=food.status)
+            
+#             session.commit()
+
+#####################################################
+# @app.put("/food_db/{foodid}")
+# async def update_remaining(foodid: int, remaining: int, current_user: loginUser = Depends(get_current_user)):
+#     try:
+#         # foodidで既存の食品レコードを検索
+#         food_item = session.query(FoodTable).filter(FoodTable.foodid == foodid).first()
+#         if not food_item:
+#             raise HTTPException(status_code=404, detail="Food not found")
+
+#         # Remaining フィールドを更新
+#         food_item.Remaining = remaining
+
+#         # 変更をデータベースにコミット
+#         session.commit()
+#     except Exception as e:
+#         print("This is put /food_db/{foodid} error")
+#         print(e)
+#         raise HTTPException(
+#             status_code=status.HTTP_406_NOT_ACCEPTABLE,
+#             detail="Can't update remaining food data to db",
+#             headers={"WWW-Authenticate": "Bearer"},
+#         )
+#     return {"message": "Food remaining updated successfully!"}
+############################################################
 
 # 食材編集画面：食材編集
 @app.put("/food_db")

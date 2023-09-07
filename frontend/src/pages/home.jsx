@@ -7,6 +7,7 @@ import { Typography, Button } from "@material-tailwind/react";
 
 const Home = () => {
   console.log(localStorage.getItem("token"));
+  ;
   const chartData = [
     { name: "Category A", value: 400 },
     { name: "Category B", value: 300 },
