@@ -2,7 +2,7 @@ import { Typography } from "@material-tailwind/react";
 import React from "react";
 import { PieChart, Pie, Cell, Label, Legend, Tooltip } from "recharts";
 
-const ShowPiChart = ({ data, title }) => {
+const ShowPiChart2 = ({ data, title }) => {
   const COLORS = ["#808080", "#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#F5FFFA", "9370DB", "008080", "#DC143C"];
   const Category = ["肉類・魚介類・卵", "野菜", "果物", "穀類", "乳製品", "調味料", "飲料", "その他", "外食"];
 
@@ -36,10 +36,10 @@ const ShowPiChart = ({ data, title }) => {
             color: COLORS[entry.category % COLORS.length], // カスタムカラー
           }))}
         />
-        <Tooltip formatter={(value) => [`${value}円`]} />
+        <Tooltip formatter={(value) => [`${value}%`]} />
       </PieChart>
     </div>
   );
 };
 
-export default ShowPiChart;
+export default ShowPiChart2;

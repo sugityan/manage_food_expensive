@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/sidebar";
 import Header from "../components/header";
 import ShowPiChart from "../components/showPiChart";
+import ShowPiChart2 from "../components/showPiChart2";
 import { Typography, Button } from "@material-tailwind/react";
 import axios from "axios";
 
@@ -87,7 +88,7 @@ const Home = () => {
           </div>}
 
           {ShowRemainGraph ? (
-          <ShowPiChart data={dataDict.remain_graph} title="残量率(%)" />
+          <ShowPiChart2 data={dataDict.remain_graph} title="残量率(%)" />
           ) : 
           <div className="flex justify-center items-center pb-20 ">
               <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
@@ -97,7 +98,7 @@ const Home = () => {
           </div>}
 
           {ShowFoodlossGraph ? (
-          <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率(%)" />
+          <ShowPiChart2 data={dataDict.foodloss_graph} title="フードロス率(%)" />
           ) :
           <div className="flex justify-center items-center pb-20 ">
               <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
