@@ -11,6 +11,7 @@ from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from functions.check_user import get_current_user
 from sqlalchemy import func
+from sqlalchemy import case
 
 
 app = FastAPI()
@@ -504,6 +505,116 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
     return all_info_list
 
 
+# 門倉編集分
+@app.get("/compare_cost")
+def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
+
+    user_age = current_user.age
+    today = date.today()
+    one_month_ago = today - timedelta(days=30)
+
+    if user_age <= 29:
+        min_age = 0
+        max_age = 29
+    elif user_age >=30 and user_age <=39:
+        min_age = 30
+        max_age = 39
+    elif user_age >= 40 and user_age <= 49:
+        min_age = 40
+        max_age = 49
+    else :
+        min_age = 50
+        max_age = 10000
+
+    gen = session.query(UserTable.UserID).filter(UserTable.age.between(min_age, max_age)).subquery()
+    
+    b = session.query(gen.c.UserID, func.sum(ShoppingTable.Price).label("total")).join(
+        ShoppingTable, gen.c.UserID == ShoppingTable.UserID
+    ).filter(
+        ShoppingTable.Date.between(one_month_ago, today)  # dateカラムの値が1ヶ月前と今日の間であることを確認
+    ).group_by(
+        gen.c.UserID
+    ).subquery()
+    
+    record = session.query(
+        case(
+            (b.c.total < 30000, "~3万円"),
+            ((b.c.total >= 30000) & (b.c.total < 40000), "3万円~4万円"),
+            ((b.c.total >= 40000) & (b.c.total < 50000), "4万円~5万円"),
+            ((b.c.total >= 50000) & (b.c.total < 60000), "5万円~6万円"),
+            ((b.c.total >= 60000) & (b.c.total < 80000), "6万円~8万円"),
+            ((b.c.total >= 80000) & (b.c.total < 100000), "8万円~10万円"),
+            else_="10万円~"
+        ).label("name"),
+        func.count().label("number")
+    ).group_by("name").all()
+
+    result = []
+    for re in record:
+        result.append(
+            {
+                "name" : re.name,
+                "number" : re.number
+            }
+        )
+
+    return result
+
+@app.get("/compare_loss")
+def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
+
+    user_age = current_user.age
+    today = date.today()
+    one_month_ago = today - timedelta(days=30)
+
+    if user_age <= 29:
+        min_age = 0
+        max_age = 29
+    elif user_age >=30 and user_age <=39:
+        min_age = 30
+        max_age = 39
+    elif user_age >= 40 and user_age <= 49:
+        min_age = 40
+        max_age = 49
+    else :
+        min_age = 50
+        max_age = 10000
+
+    gen = session.query(UserTable.UserID).filter(UserTable.age.between(min_age, max_age)).subquery()
+
+    b = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
+        FoodTable, gen.c.UserID == FoodTable.UserID
+    ).filter(
+        FoodTable.expiry_date.between(one_month_ago, today), 
+        FoodTable.status == 0,
+        FoodTable.Remaining != 0
+    ).group_by(
+        gen.c.UserID
+    ).subquery()
+    
+    record = session.query(
+        case(
+            (b.c.total < 1000, "~千円"),
+            ((b.c.total >= 1000) & (b.c.total < 2000), "千円~2千円"),
+            ((b.c.total >= 2000) & (b.c.total < 3000), "2千円~3千円"),
+            ((b.c.total >= 3000) & (b.c.total < 5000), "3千円~5千円"),
+            ((b.c.total >= 5000) & (b.c.total < 7000), "5千円~7千円"),
+            ((b.c.total >= 7000) & (b.c.total < 10000), "7千円~1万円"),
+            else_="1万円~"
+        ).label("name"),
+        func.count().label("number")
+    ).group_by("name").all()
+
+    result = []
+    for re in record:
+        result.append(
+            {
+                "name" : re.name,
+                "number" : re.number
+            }
+        )
+    
+    return result
 # # 食材一覧画面：食材情報一覧取得
 # @app.get("/get_foods")
 # def get_food_list(userID: int):
