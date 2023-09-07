@@ -377,7 +377,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
         total_remain_cost_list = []
         total_foodloss_cost_dict = {}
         total_foodloss_cost_list = []
-        category_list = ["その他", "野菜", "肉", "魚", "穀物", "調味料", "加工食品", "飲料水", "外食"]
+        category_list = ["肉類・魚介類・卵", "野菜", "果物", "穀類", "乳製品", "調味料", "飲料", "その他", "外食"]
 
         shopping_costs = session.query(
             ShoppingTable.Date, 

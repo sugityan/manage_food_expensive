@@ -77,7 +77,7 @@ const Home = () => {
             </div>
           </div>
           {ShowCostGraph ? (
-          <ShowPiChart data={dataDict.cost_graph} title="食費" />
+          <ShowPiChart data={dataDict.cost_graph} title="食費(円)" />
           ) :
           <div className="flex justify-center items-center  ">
               <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
@@ -87,7 +87,7 @@ const Home = () => {
           </div>}
 
           {ShowRemainGraph ? (
-          <ShowPiChart data={dataDict.remain_graph} title="残量率" />
+          <ShowPiChart data={dataDict.remain_graph} title="残量率(%)" />
           ) : 
           <div className="flex justify-center items-center pb-20 ">
               <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
@@ -97,7 +97,7 @@ const Home = () => {
           </div>}
 
           {ShowFoodlossGraph ? (
-          <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率" />
+          <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率(%)" />
           ) :
           <div className="flex justify-center items-center pb-20 ">
               <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">

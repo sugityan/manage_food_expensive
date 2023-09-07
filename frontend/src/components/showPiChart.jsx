@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, Label, Legend, Tooltip } from "recharts";
 
 const ShowPiChart = ({ data, title }) => {
   const COLORS = ["#808080", "#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#F5FFFA", "9370DB", "008080", "#DC143C"];
-  const Category = ["その他", "野菜", "肉", "魚", "穀物", "調味料", "加工食品", "飲料水", "外食"]
+  const Category = ["肉類・魚介類・卵", "野菜", "果物", "穀類", "乳製品", "調味料", "飲料", "その他", "外食"]
 
   return (
     <div className="flex flex-col justify-center items-center">
