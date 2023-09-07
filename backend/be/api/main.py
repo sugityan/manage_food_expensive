@@ -120,7 +120,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     access_token = create_access_token(
         # TODO: make user type to User Table
         # user["user"] => user.Email
-        data={"sub": user["Email"]}, expires_delta=access_token_expires
+        data={"sub": user["email"]}, expires_delta=access_token_expires
     )
     
     return {"access_token": access_token, "token_type": "bearer"}
@@ -195,43 +195,44 @@ async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current
         )
     return {"message": "Food created successfully!"}
 
-# # 食材alert画面：残量変更
-# @app.patch("/food_db")
-# async def fix_amount_food(food: FoodPatch, foodPost: FoodPost,current_user: loginUser = Depends(get_current_user)):
-#             update_data = foodPost.dict(exclude_unset=True)
+# 食材alert画面：残量変更
+@app.patch("/food_db")
+async def fix_amount_food(food: FoodPatch, foodPost: FoodPost,current_user: loginUser = Depends(get_current_user)):
+            update_data = foodPost.dict(exclude_unset=True)
 
-#             new_food = FoodTable(
-#                             FoodID=food.foodID,
-#                             Remaining=food.Remaining,
-#                             UserID=current_user.UserID,
-#                             status=food.status)
+            new_food = FoodTable(
+                            FoodID=food.foodID,
+                            Remaining=food.Remaining,
+                            UserID=current_user.UserID,
+                            status=food.status)
             
-#             session.commit()
+            session.commit()
 
-#####################################################
-# @app.put("/food_db/{foodid}")
-# async def update_remaining(foodid: int, remaining: int, current_user: loginUser = Depends(get_current_user)):
-#     try:
-#         # foodidで既存の食品レコードを検索
-#         food_item = session.query(FoodTable).filter(FoodTable.foodid == foodid).first()
-#         if not food_item:
-#             raise HTTPException(status_code=404, detail="Food not found")
+####################################################
+@app.put("/food_db/{foodid}")
+async def update_remaining(foodid: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
+    try:
+        # foodidで既存の食品レコードを検索
+        food_item = session.query(FoodTable).filter(FoodTable.foodid == foodid).first()
+        if not food_item:
+            raise HTTPException(status_code=404, detail="Food not found")
 
-#         # Remaining フィールドを更新
-#         food_item.Remaining = remaining
+        # Remaining フィールドを更新
+        food_item.Remaining = remaining
+        food_item.status = status
 
-#         # 変更をデータベースにコミット
-#         session.commit()
-#     except Exception as e:
-#         print("This is put /food_db/{foodid} error")
-#         print(e)
-#         raise HTTPException(
-#             status_code=status.HTTP_406_NOT_ACCEPTABLE,
-#             detail="Can't update remaining food data to db",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     return {"message": "Food remaining updated successfully!"}
-############################################################
+        # 変更をデータベースにコミット
+        session.commit()
+    except Exception as e:
+        print("This is put /food_db/{foodid} error")
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Can't update remaining food data to db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return {"message": "Food remaining updated successfully!"}
+###########################################################
 
 # 食材編集画面：食材編集
 @app.put("/food_db")
