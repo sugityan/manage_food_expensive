@@ -135,6 +135,7 @@ class ShoppingPost(BaseModel):
     Price: int
 
 class FoodPost(BaseModel):
+    FoodID: int
     name: str
     category: int
     price: int

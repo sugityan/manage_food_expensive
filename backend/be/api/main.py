@@ -218,10 +218,10 @@ async def update_remaining(alertFoodPut: FoodAlertPut, current_user: loginUser =
 
 # 食材編集画面：食材編集
 @app.put("/food_db")
-async def fix_food(food: FoodPost, foodID: int, current_user: loginUser = Depends(get_current_user)):
+async def fix_food(food: FoodPost, current_user: loginUser = Depends(get_current_user)):
     try:
         foods_lists = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID).\
-            filter(FoodTable.FoodID == foodID).first()
+            filter(FoodTable.FoodID == food.FoodID).first()
         foods_lists.name = food.name
         foods_lists.category = food.category
         foods_lists.price = food.price

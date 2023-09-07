@@ -6,6 +6,7 @@ import ShowPiChart from "../components/showPiChart";
 import ShowPiChart2 from "../components/showPiChart2";
 import { Typography, Button } from "@material-tailwind/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 const Home = () => {
@@ -16,6 +17,7 @@ const Home = () => {
     remain_graph: [],
     foodloss_graph: [],
   });
+  const navigate = useNavigate();
 
   const baseUrl = "http://127.0.0.1:8000";
 
@@ -39,6 +41,11 @@ const Home = () => {
           console.log("バックエンドからのエラー");
         }
       } catch (error) {
+        if (error.response.status === 401) {
+          console.log("認証エラー");
+          localStorage.removeItem("token");
+          navigate("/login"); // /homeにリダイレクト
+        }
         console.error(error);
       }
     };
