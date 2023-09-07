@@ -79,21 +79,32 @@ const Home = () => {
           {ShowCostGraph ? (
           <ShowPiChart data={dataDict.cost_graph} title="食費" />
           ) :
-            <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 className="heading-016">今月の食費が登録されていません。食費を登録しよう！</h2>
-            </div>}
+          <div className="flex justify-center items-center  ">
+              <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
+                  <h2 className="text-xl font-semibold mb-2">今月の食費が登録されていません。</h2>
+                  <p className="text-sm">食費を登録しよう！</p>
+              </div>
+          </div>}
+
           {ShowRemainGraph ? (
           <ShowPiChart data={dataDict.remain_graph} title="残量率" />
           ) : 
-            <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 className="heading-016">残っている食材がありません。購入した食材を登録しよう！</h2>
-            </div>}
+          <div className="flex justify-center items-center pb-20 ">
+              <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
+                  <h2 className="text-xl font-semibold mb-2">残っている食材がありません。</h2>
+                  <p className="text-sm">購入した食材を登録しよう！</p>
+              </div>
+          </div>}
+
           {ShowFoodlossGraph ? (
           <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率" />
           ) :
-            <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 className="heading-016">今月のフードロスはありません。この調子！</h2>
-            </div>}
+          <div className="flex justify-center items-center pb-20 ">
+              <div className="text-center text-blue-600 p-5 border border-blue-500 bg-white rounded-xl shadow-md">
+                  <h2 className="text-xl font-semibold mb-2">今月のフードロスはありません。</h2>
+                  <p className="text-sm">この調子！</p>
+              </div>
+          </div>}
         </div>
       </div>
     </>
