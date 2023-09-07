@@ -3,8 +3,12 @@ import React from "react";
 import { PieChart, Pie, Cell, Label, Legend, Tooltip } from "recharts";
 
 const ShowPiChart = ({ data, title }) => {
-  const COLORS = ["#808080", "#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#F5FFFA", "9370DB", "008080", "#DC143C"];
-  const Category = ["肉類・魚介類・卵", "野菜", "果物", "穀類", "乳製品", "調味料", "飲料", "その他", "外食"];
+  const COLORS = ["#DB7093", "#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#F5FFFA", "9370DB", "#808080", "#DC143C"];
+  const Category = ["肉類・魚介類・卵", "野菜", "果物", "穀類", "乳製品", "調味料", "飲料", "その他", "外食"]
+  const label = ({ cost }) => {
+    return `${cost}円`;
+  };
+          
 
   return (
     <div className="flex flex-col justify-center items-center">
@@ -18,7 +22,7 @@ const ShowPiChart = ({ data, title }) => {
           cy="50%"
           outerRadius={80}
           fill="#8884d8"
-          label
+          label={label}
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[entry.category % COLORS.length]} />
@@ -26,7 +30,7 @@ const ShowPiChart = ({ data, title }) => {
           <Label
             valueKey="cost"
             position="center"
-            content={({ value }) => `${value}円`}
+            content={({ value }) => `${value}%`}
           />
         </Pie>
         <Legend
@@ -35,8 +39,8 @@ const ShowPiChart = ({ data, title }) => {
             type: 'circle',
             color: COLORS[entry.category % COLORS.length], // カスタムカラー
           }))}
-        />
-        <Tooltip formatter={(value) => [`${value}円`]} />
+          />
+        <Tooltip formatter={(value) => [`${value}%`]} />
       </PieChart>
     </div>
   );
