@@ -19,14 +19,14 @@ import {
 import axios from "axios";
 
 const convertCategory = [
-  "その他",
+  "肉類・魚介類・卵",
   "野菜",
-  "肉",
-  "魚",
-  "穀物",
+  "果物",
+  "穀類",
+  "乳製品",
   "調味料",
-  "加工食品",
-  "飲料水",
+  "飲料",
+  "その他",
 ];
 
 const FoodListHeader = () => {
