@@ -393,7 +393,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
         total_remain_cost_list = []
         total_foodloss_cost_dict = {}
         total_foodloss_cost_list = []
-        category_list = ["その他", "野菜", "肉", "魚", "穀物", "調味料", "加工食品", "飲料水"]
+        category_list = ["その他", "野菜", "肉", "魚", "穀物", "調味料", "加工食品", "飲料水", "外食"]
 
         shopping_costs = session.query(
             ShoppingTable.Date, 
@@ -411,7 +411,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
                 total_eatout_cost += shop_dict["TotalShoppingPrice"]
         if total_eatout_cost != 0:
             tmp_dict = {}
-            tmp_dict["category"] = "外食"
+            tmp_dict["category"] = 8
             tmp_dict["cost"] = total_eatout_cost
             total_cost_list.append(tmp_dict)
         total_cost += total_eatout_cost
@@ -425,7 +425,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
                     total_cost_dict[category] = food.price
         for k, v in total_cost_dict.items():
             tmp_dict = {}
-            tmp_dict["category"] = category_list[k]
+            tmp_dict["category"] = k
             tmp_dict["cost"] = v
             total_cost += v
             total_cost_list.append(tmp_dict)
@@ -452,7 +452,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             total_remain_cost_list = []
             for k, v in total_remain_cost_dict.items():
                 tmp_dict = {}
-                tmp_dict["category"] = category_list[k]
+                tmp_dict["category"] = k
                 remain_rate = int(v*100/total_remain_cost)
                 tmp_dict["cost"] = remain_rate
                 total_remain_cost_list.append(tmp_dict)
@@ -480,7 +480,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             total_foodloss_cost_list = []
             for k, v in total_foodloss_cost_dict.items():
                 tmp_dict = {}
-                tmp_dict["category"] = category_list[k]
+                tmp_dict["category"] = k
                 foodloss_rate = int(v*100/total_foodloss_cost)
                 tmp_dict["cost"] = foodloss_rate
                 total_foodloss_cost_list.append(tmp_dict)
