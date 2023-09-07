@@ -533,14 +533,15 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     ).group_by(
         foodloss_subquery.c.UserID
     ).first()
-    # foodloss_result = session.query(FoodTable.UserID, func.sum(FoodTable.price).label("totalloss")).filter(
-    #     FoodTable.UserID == current_user.UserID,
-    #     FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
-    #     FoodTable.status == 0,
-    #     FoodTable.Remaining != 0
-    # ).group_by(
-    #     FoodTable.UserID
-    # ).first()
+
+    foodc_result = session.query(FoodTable.UserID, func.sum(FoodTable.price).label("totalloss")).filter(
+        FoodTable.UserID == current_user.UserID,
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
+        FoodTable.status == 0,
+        FoodTable.Remaining != 0
+    ).group_by(
+        FoodTable.UserID
+    ).first()
 
     if foodcost_result:
         foodcost = foodcost_result.totalcost
@@ -551,8 +552,13 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         foodloss = foodloss_result.totalloss
     else:
         foodloss = 0
+
+    if foodc_result:
+        foodc = foodc_result.totalloss
+    else:
+        foodc = 0
     
-    foodcost += foodloss
+    foodcost += foodc
 
     foodcostRanking = "10万円~"
     if foodcost < 30000:
@@ -621,15 +627,16 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     ).group_by(
         sub.c.UserID
     ).subquery()
-    # a = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
-    #     FoodTable, gen.c.UserID == FoodTable.UserID
-    # ).filter(
-    #     FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
-    #     FoodTable.status == 0,
-    #     FoodTable.Remaining != 0
-    # ).group_by(
-    #     gen.c.UserID
-    # ).subquery()
+
+    a = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
+        FoodTable, gen.c.UserID == FoodTable.UserID
+    ).filter(
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
+        FoodTable.status == 0,
+        FoodTable.Remaining != 0
+    ).group_by(
+        gen.c.UserID
+    ).subquery()
 
 
     record = session.query(
@@ -675,9 +682,9 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     combined_query = session.query(
         b.c.UserID,
-        (b.c.total + foodloss_result.c.total).label("total")
+        (b.c.total + a.c.total).label("total")
     ).join(
-        foodloss_result, b.c.UserID == foodloss_result.c.UserID
+        a, b.c.UserID == a.c.UserID
     ).subquery()
 
     record = session.query(
