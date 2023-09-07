@@ -28,7 +28,7 @@ function GradientRegistration() {
               name="catgory"
               required
               className="pr-5 pl-5 rounded-full border-2"
-            />
+            >
               <option>肉類・魚介類・卵</option>
               <option>野菜</option>
               <option>果物</option>

@@ -2,14 +2,12 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
+import Compare from "./pages/compare";
 import EatoutRegistration from "./pages/eatoutRegistration";
 import Expences from "./pages/expences";
+import FoodList from "./pages/foodList";
 import GradientRegistration from "./pages/gradientRegistration";
 import Home from "./pages/home";
-import EatoutRegistration from "./pages/eatoutRegistration";
-import GradientRegistration from "./pages/gradientRegistration";
-import FoodList from "./pages/foodList";
-import Compare from "./pages/compare";
 import Login from "./pages/login";
 import UserRegister from "./pages/userRegister";
 
