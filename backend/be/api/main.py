@@ -28,12 +28,28 @@ app.add_middleware(
 @app.post("/create_user")
 def create_user(user: User):
     try:
-        actual_db_item = UserTable(Password=get_password_hash(user.Password), p_num=user.p_num, age=user.age, Email=user.Email)
+        actual_db_item = \
+        UserTable(Password=get_password_hash(user.password),\
+                   p_num=user.household,\
+                      age=user.age, Email=user.email)
         session.add(actual_db_item)
         session.commit()
+        
+        # tokenの期限を設定
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        # tokenの作成
+        access_token = create_access_token(
+            data={"sub": user.email}, expires_delta=access_token_expires
+            )
     except Exception as e:
         print(e)
-        return e
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Something wrong with user data",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+
 
     return {"message": "User created successfully!"}
 
@@ -43,18 +59,14 @@ def create_user(user: User):
 #     # 計算式
 
 
-#     return {
-#         "cost": [{"name": "categoryA", "value": 1000}, {"name": "categoryB", "value": 1000}, {"name": "categoryC", "value": 1000}],
-#         "remaining": [{"name": "categoryB", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
-#         "foodloss": [{"name": "categoryC", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
-#         "sum_cost": 1000,
-#     }
-
+    return {"token": access_token,  "token_type": "bearer"}
 
 # ログイン画面：　ログイン
 @app.post("/token", response_model=Token)
 # TODO: form_data => json from frontend input
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+# async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(form_data: Login):
+# async def login_for_access_token(user: Login):
     print("login_for_access_token api message")
     print("TODO: change form_data to json from frontend input")
     # Get users from mysql db:
@@ -64,7 +76,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         print("This is post /token error")
         print("Login api error")
         print(e)
-    user = authenticate_user(users_db, form_data.username, form_data.password)
+    user = authenticate_user(users_db, form_data.email, form_data.password)
     if not user: # When user is False, return HTTPException
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

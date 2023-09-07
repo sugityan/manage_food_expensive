@@ -45,7 +45,7 @@ const Header = () => {
           href="home"
           className="mr-4 cursor-pointer py-1.5 text-2xl font-bold"
         >
-          Food Saver(仮)
+          Food Server(仮)
         </Typography>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>

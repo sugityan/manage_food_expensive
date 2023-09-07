@@ -6,6 +6,7 @@ import ShowPiChart from "../components/showPiChart";
 import { Typography, Button } from "@material-tailwind/react";
 
 const Home = () => {
+  console.log(localStorage.getItem("token"));
   const chartData = [
     { name: "Category A", value: 400 },
     { name: "Category B", value: 300 },
@@ -38,10 +39,10 @@ const Home = () => {
             </div>
             <div className="flex gap-10">
               <a href="/eatoutRegistrate" className="mb-5">
-                <Button>食材登録へ</Button>
+                <Button>外食費登録へ</Button>
               </a>
               <a href="/gradientRegistrate">
-                <Button>外食費登録へ</Button>
+                <Button>食材登録へ</Button>
               </a>
             </div>
           </div>

@@ -1,31 +1,36 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, Input, Button, Typography } from "@material-tailwind/react";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const baseUrl = "http://127.0.0.1:8000";
   //   ログイン処理
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch("https://example.com/api/login", {
-        method: "POST",
+      const response = await axios.post(baseUrl + '/token', {
+        email: email,
+        password: password,
+      }, {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
       });
-
       //   response.okはレスポンスが200番台かどうかを判定する
       //   エラーの内容はとりあえず指定しない
       //   ユーザーIDはどうやって引き継ぐ？
-      if (response.ok) {
+      console.log(response);
+      if (response.statusText === "OK") {
         // ログイン成功
         console.log("ログイン成功");
+        localStorage.setItem("token", response.data["access_token"])
+        
         navigate("/home"); // /homeにリダイレクト
       } else {
         // ログイン失敗

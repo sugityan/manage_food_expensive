@@ -8,13 +8,14 @@ const UserRegister = () => {
   const [age, setAge] = useState(0);
   const [household, setHousehold] = useState(0);
   const navigate = useNavigate();
+  const baseUrl = "http://127.0.0.1:8000";
 
   //   ログイン処理
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch("https://example.com/api/login", {
+      const response = await fetch(baseUrl + "/create_user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,9 +26,11 @@ const UserRegister = () => {
       //   response.okはレスポンスが200番台かどうかを判定する
       //   エラーの内容はとりあえず指定しない
       //   ユーザーIDはどうやって引き継ぐ？
-      if (response.ok) {
+      if (response.statusText === "OK") {
         // ログイン成功
         console.log("ログイン成功");
+        localStorage.setItem("token", response.data["access_token"])
+        
         navigate("/home"); // /homeにリダイレクト
       } else {
         // ログイン失敗
