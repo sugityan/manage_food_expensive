@@ -409,10 +409,11 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
         for shop_dict in shopping_costs:
             if this_month == str(shop_dict["Date"])[:7]:
                 total_eatout_cost += shop_dict["TotalShoppingPrice"]
-        tmp_dict = {}
-        tmp_dict["category"] = "外食"
-        tmp_dict["cost"] = total_eatout_cost
-        total_cost_list.append(tmp_dict)
+        if total_eatout_cost != 0:
+            tmp_dict = {}
+            tmp_dict["category"] = "外食"
+            tmp_dict["cost"] = total_eatout_cost
+            total_cost_list.append(tmp_dict)
         total_cost += total_eatout_cost
         # 食費の合計
         for food in food_lists:
