@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";;
 
 function EatoutRegistration() {
   const baseUrl = "http://127.0.0.1:8000";
+  const purpose_dict = {"0":"食堂・レストラン", "1": "飲み会・宴会", "2": "その他"}
   const [formData, setFormData] = useState({
     date: "",
     price: "",
@@ -92,9 +93,9 @@ function EatoutRegistration() {
               onChange={handleChange}
               className="border-2"
             >
-                <option>食堂・レストラン</option>
-                <option>飲み会・宴会</option>
-              <option value="1">その他</option>
+                <option value="0">食堂・レストラン</option>
+                <option value="1">飲み会・宴会</option>
+              <option value="2">その他</option>
             </select>
           </div>
           <p className="flex justify-end">

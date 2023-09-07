@@ -82,6 +82,7 @@ const Sidebar = () => {
       console.log(response);
       if (response.status === 200) {
         console.log("廃棄・使い切り完了");
+        window.location.reload();
         setRemain();
       } else {
         console.log("バックエンドからエラーが帰ってきてるよ");

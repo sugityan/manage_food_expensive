@@ -48,10 +48,46 @@ const FoodListHeader = () => {
 
 const FoodListItem = ({ food }) => {
   const navigate = useNavigate(); // useNavigateを使用して、navigate関数を取得
+  const [remain, setRemain] = useState("");
 
   const handleItemClick = () => {
     navigate("/gradientChange", { state: { food } }); // navigate関数を使用して、ページ遷移を行う
   };
+  const baseUrl = "http://127.0.0.1:8000";
+
+  const handleRemainingInput = async (food) => {
+    try {
+      const response = await axios.put(
+        baseUrl + `/alert_food_fix`,
+        {
+          FoodID: food.FoodID,
+          remaining: remain,
+          status: 1,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response);
+
+      if (response.status === 200) {
+        console.log("記録完了");
+        console.log(food.FoodID);
+        window.location.reload();
+      } else {
+        console.log("バックエンドからエラーが帰ってきてるよ");
+      }
+    } catch (error) {
+      console.log("food:"+ food.foodID);
+      console.log("remain:"+remain);
+      console.log("通信失敗");
+    }
+  };
+
+  
 
   return (
     <ListItem className="cursor-pointer">
@@ -110,8 +146,11 @@ const FoodListItem = ({ food }) => {
             残量を設定してください
           </Typography>
           <div className="flex gap-2">
-            <Input label="残量(%)" type="number" />
-            <Button variant="gradient">OK</Button>
+            {/* <Input label={`残量(%)`} type="number" value={ remain } onClick={() => handleRemainingInput(food)} /> */}
+            <Input label={`残量(%)`} type="number" value={ remain } 
+            onChange={(event) => setRemain(event.target.value)}
+            />
+            <Button variant="gradient" onClick={() => handleRemainingInput(food)}>OK</Button>
           </div>
         </PopoverContent>
       </Popover>
