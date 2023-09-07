@@ -1,18 +1,28 @@
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Date, MetaData
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Date,
+    MetaData,
+)
 from pydantic import BaseModel
 from db import Base
 from db import ENGINE
 from datetime import date
 
+
 # テーブル定義
 class TestUserTable(Base):
-    __tablename__ = 'test_user'
+    __tablename__ = "test_user"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(30), nullable=False)
     email = Column(String(128), nullable=False)
 
+
 class TestUserTable2(Base):
-    __tablename__ = 'test_user2'
+    __tablename__ = "test_user2"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(30), nullable=False)
     nickname = Column(String(128), nullable=False)
@@ -33,7 +43,7 @@ class UserTable(Base):
             "password": self.Password,
             "household": self.p_num,
             "age": self.age,
-            "email": self.Email
+            "email": self.Email,
         }
 
 
@@ -45,6 +55,7 @@ class ShoppingTable(Base):
     Date = Column(Date)
     Purpose = Column(Integer, nullable=False)
     Price = Column(Integer, nullable=False)
+
 
 class FoodTable(Base):
     __tablename__ = "Food"
@@ -60,7 +71,7 @@ class FoodTable(Base):
     unit = Column(String(255))
     memo = Column(String(255))
     Remaining = Column(Integer)
-    status = Column(Integer, nullable=False) 
+    status = Column(Integer, nullable=False)
 
     def toDict(self):
         return {
@@ -75,28 +86,32 @@ class FoodTable(Base):
             "unit": self.unit,
             "memo": self.memo,
             "Remaining": self.Remaining,
-            "status": self.status
+            "status": self.status,
         }
 
 
-# モデル定義 
+# モデル定義
 class User(BaseModel):
     password: str
     household: int
     age: int
     email: str
 
+
 class loginUser(User):
     UserID: int
+
 
 class Login(BaseModel):
     email: str
     password: str
 
+
 class FoodAlertPut(BaseModel):
     FoodID: int
     remaining: int
     status: int
+
 
 class Shopping(BaseModel):
     ShoppingID: int
@@ -104,6 +119,7 @@ class Shopping(BaseModel):
     Date: date
     Purpose: int
     Price: int
+
 
 class Food(BaseModel):
     FoodID: int
@@ -119,9 +135,11 @@ class Food(BaseModel):
     Remaining: int
     status: int
 
+
 class UserCreate(BaseModel):
     name: str
     email: str
+
 
 class UserNew(BaseModel):
     Password: str
@@ -129,12 +147,27 @@ class UserNew(BaseModel):
     age: int
     Email: str
 
+
 class ShoppingPost(BaseModel):
     Date: str
     Purpose: int
     Price: int
 
+
 class FoodPost(BaseModel):
+    name: str
+    category: int
+    price: int
+    expiry_date: str
+    Date: str
+    amount: int
+    unit: str
+    memo: str
+    Remaining: int
+    status: int
+
+
+class FoodPut(BaseModel):
     FoodID: int
     name: str
     category: int
@@ -147,15 +180,18 @@ class FoodPost(BaseModel):
     Remaining: int
     status: int
 
+
 class FoodPatch(BaseModel):
     foodID: int
     remaining: int
     status: int
 
+
 class CostByDate(BaseModel):
     Date: date
     Purpose: int
     Price: int
+
 
 class EatoutData(BaseModel):
     date: str  # YYYY-MM-DD 形式の文字列
@@ -170,4 +206,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
