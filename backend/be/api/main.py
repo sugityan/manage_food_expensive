@@ -116,9 +116,8 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
         elif remain_days.days == 0:
             tmp_food_dict["Remaining_days"] = "今日中"
         else:
-             tmp_food_dict["Remaining_days"] = "後" + remain_days.days.toString() + "日"
+             tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
 
-        tmp_food_dict["Remaining_days"] = remain_days.days
         tmp_food_dict["name"] = food.name
         foods_list.append(tmp_food_dict)
     # 残り日数で辞書をソート
