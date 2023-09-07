@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import axios from "axios";
+import React, { useState } from "react";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 
@@ -42,8 +42,8 @@ function EatoutRegistration() {
         <Sidebar />
         <div className="flex justify-center w-screen">
         <form
-          action="/"
           onSubmit={handleSubmit}
+          action="/"
           className="flex flex-col justify-center w-2/5 gap-4 text-3xl leading-loose"
         >
           <p>
