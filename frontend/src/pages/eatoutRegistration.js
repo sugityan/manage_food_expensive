@@ -35,15 +35,16 @@ function EatoutRegistration() {
       console.error("There was an error:", error);
     }
   };
-
   return (
     <>
-      <Header />
+    <Header />
       <div className="flex h-screen">
         <Sidebar />
+        <div className="flex justify-center w-screen">
         <form
+          action="/"
           onSubmit={handleSubmit}
-          className="flex flex-col justify-center gap-4 text-2xl"
+          className="flex flex-col justify-center w-2/5 gap-4 text-3xl leading-loose"
         >
           <p>
             日付
@@ -64,7 +65,7 @@ function EatoutRegistration() {
               name="price"
               required
               onChange={handleChange}
-              className="border-2"
+              className="pr-5 pl-5 rounded-full border-2"
             />
             円
           </p>
@@ -76,15 +77,16 @@ function EatoutRegistration() {
               onChange={handleChange}
               className="border-2"
             >
-              <option value="0">飲み会</option>
+                <option>食堂・レストラン</option>
+                <option>飲み会・宴会</option>
               <option value="1">その他</option>
             </select>
           </div>
           <p className="flex justify-end">
-            <input type="submit" value="登録" className="border-2" />
+            <input type="submit" value="登録" className="pr-5 pl-5 rounded-full border-2" />
           </p>
         </form>
-        {result && <div className="mt-4 text-xl">{result}</div>}
+        </div>
       </div>
     </>
   );
