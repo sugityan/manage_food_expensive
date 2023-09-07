@@ -15,7 +15,8 @@ function EatoutRegistration() {
             <p>金額　<input typte="number" step="1" id="price" name="price" required className="pr-5 pl-5 rounded-full border-2" />円</p>
             <div>
               用途　<select id="purpose" name="purpose" className="border-2">
-                <option>飲み会</option>
+                <option>食堂・レストラン</option>
+                <option>飲み会・宴会</option>
                 <option>その他</option>
               </select>
             </div>

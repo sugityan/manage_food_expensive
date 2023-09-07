@@ -12,7 +12,16 @@ function GradientRegistration() {
         <div className="flex justify-center w-screen">
           <form action="/" className="flex flex-col justify-center gap-4 text-3xl leading-loose">
             <p>名前　<input type="text" id="name" name="name" required className="pr-5 pl-5 rounded-full border-2" /></p>
-            <p>カテゴリー　<input type="text" id="category" name="catgory" required className="pr-5 pl-5 rounded-full border-2" /></p>
+            カテゴリー　<select id="category" name="category" className="pr-5 pl-5 rounded-full border-2">
+              <option>肉類・魚介類・卵</option>
+              <option>野菜</option>
+              <option>果物</option>
+              <option>穀類</option>
+              <option>乳製品</option>
+              <option>調味料</option>
+              <option>飲料</option>
+              <option>その他</option>
+            </select>
             <div className="flex gap-10">
               <p>購入日　<input type="date" id="date" name="date" className="pr-5 pl-5 rounded-full" required /></p>
               <p>賞味期限／消費期限　<input type="date" id="limit" name="limit" className="pr-5 pl-5 rounded-full" required /></p>
