@@ -88,6 +88,9 @@ select * from test_user;
 - コンテナ内のデータベース閲覧
     https://qiita.com/go_glzgo/items/3520818659a07bd17839
 
+- dockerをterminalで扱う
+  https://qiita.com/kooohei/items/0e788a2ce8c30f9dba53
+
 
 ## 設計
 
