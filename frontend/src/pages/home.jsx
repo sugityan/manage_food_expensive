@@ -80,19 +80,19 @@ const Home = () => {
           <ShowPiChart data={dataDict.cost_graph} title="食費" />
           ) :
             <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 class="heading-016">今月の食費が登録されていません。食費を登録しよう！</h2>
+            <h2 className="heading-016">今月の食費が登録されていません。食費を登録しよう！</h2>
             </div>}
           {ShowRemainGraph ? (
           <ShowPiChart data={dataDict.remain_graph} title="残量率" />
           ) : 
             <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 class="heading-016">残っている食材がありません。購入した食材を登録しよう！</h2>
+            <h2 className="heading-016">残っている食材がありません。購入した食材を登録しよう！</h2>
             </div>}
           {ShowFoodlossGraph ? (
           <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率" />
           ) :
             <div style={{textAlign: 'center', color: 'red'}}>
-            <h2 class="heading-016">今月のフードロスはありません。この調子！</h2>
+            <h2 className="heading-016">今月のフードロスはありません。この調子！</h2>
             </div>}
         </div>
       </div>

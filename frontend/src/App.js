@@ -11,7 +11,6 @@ import Home from "./pages/home";
 import Login from "./pages/login";
 import UserRegister from "./pages/userRegister";
 import GradientChange from "./pages/gradientChange";
-
 function App() {
   return (
     <Routes>
@@ -24,7 +23,7 @@ function App() {
       <Route path="/gradient" element={<FoodList />} />
       <Route path="/eatoutRegistrate" element={<EatoutRegistration />} />
       <Route path="/gradientRegistrate" element={<GradientRegistration />} />
-      <Route path="/gradientChange" element={<GradientChange />} />
+      <Route path="/gradientchange" element={<GradientChange />} />
     </Routes>
   );
 }

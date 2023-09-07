@@ -31,8 +31,8 @@ const Sidebar = () => {
 
   const handleRegisterInput = async (food) => {
     try {
-      console.log("HERE")
-      console.log(remain)
+      console.log("HERE");
+      console.log(remain);
       const response = await axios.put(
         baseUrl + `/alert_food_fix`,
         // baseUrl + `/food_db_new`,
@@ -57,8 +57,8 @@ const Sidebar = () => {
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
     } catch (error) {
-      console.log("food:"+ food.foodID);
-      console.log("remain:"+remain);
+      console.log("food:" + food.foodID);
+      console.log("remain:" + remain);
       console.log("通信失敗");
     }
   };
@@ -88,10 +88,9 @@ const Sidebar = () => {
       }
     } catch (error) {
       console.log("通信失敗");
-      console.error(error)
+      console.error(error);
     }
   };
-
 
   useEffect(() => {
     const fetchAlertFoods = async () => {
@@ -135,15 +134,13 @@ const Sidebar = () => {
           className={showSidebar ? "ml-auto" : "mr-auto"}
           onClick={handleToggleSidebar}
         >
-          <Badge overlap="circular" invisible={false}>
-            <IconButton>
-              {showSidebar ? (
-                <ChevronDoubleLeftIcon className="h-4 w-4" />
-              ) : (
-                <ChevronDoubleRightIcon className="h-4 w-4" />
-              )}
-            </IconButton>
-          </Badge>
+          <IconButton>
+            {showSidebar ? (
+              <ChevronDoubleLeftIcon className="h-4 w-4" />
+            ) : (
+              <ChevronDoubleRightIcon className="h-4 w-4" />
+            )}
+          </IconButton>
         </div>
       </div>
       {showSidebar && (
