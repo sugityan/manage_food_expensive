@@ -31,10 +31,13 @@ const Sidebar = () => {
 
   const handleRegisterInput = async (food) => {
     try {
+      console.log("HERE")
+      console.log(remain)
       const response = await axios.put(
-        baseUrl + `/food_db/${food.foodID}`,
+        baseUrl + `/alert_food_fix`,
         // baseUrl + `/food_db_new`,
         {
+          FoodID: food.foodID,
           remaining: remain,
           status: 1,
         },
@@ -46,9 +49,10 @@ const Sidebar = () => {
         }
       );
       console.log(response);
+
       if (response.status === 200) {
         console.log("記録完了");
-        setRemain("");
+        setRemain(response.data["remaining"]);
       } else {
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
@@ -62,8 +66,9 @@ const Sidebar = () => {
   const handleDiscard = async (food) => {
     try {
       const response = await axios.put(
-        baseUrl + `/food_db/${food.FoodID}`,
+        baseUrl + `/alert_food_fix`,
         {
+          FoodID: food.foodID,
           remaining: food.Remaining,
           status: 0,
         },
@@ -86,6 +91,7 @@ const Sidebar = () => {
       console.error(error)
     }
   };
+
 
   useEffect(() => {
     const fetchAlertFoods = async () => {
@@ -171,7 +177,8 @@ const Sidebar = () => {
                     </Typography>
                     <div className="flex gap-2">
                       <Input
-                        label={`記録されている残量：${food.Remaining}%`}
+                        // label={`記録されている残量：${food.Remaining}%`}
+                        label={`残量を入力してください`}
                         type="number"
                         value={remain}
                         onChange={(event) => setRemain(event.target.value)}

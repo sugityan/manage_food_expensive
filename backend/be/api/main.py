@@ -187,21 +187,47 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
     sorted_foods_list = sorted(foods_list, key=lambda x: x["Remaining_days"], reverse=True)
     return sorted_foods_list
 
+# # 食材編集画面：食材編集
+# @app.put("/food_db/{FoodID}")
+# # @app.put("/food_db_new")
+# async def update_remaining(FoodID: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
+#     print("0000")
+#     try:
+#         # foodidで既存の食品レコードを検索
+#         food_item = session.query(FoodTable).filter(FoodTable.FoodID == FoodID).first()
+        
+#         if not food_item:
+#             raise HTTPException(status_code=404, detail="Food not found")
+
+#         # Remaining フィールドを更新
+#         food_item.Remaining = remaining
+#         food_item.status = status
+
+#         # 変更をデータベースにコミット
+#         session.commit()
+#     except Exception as e:
+#         print("This is put /food_db/{foodid} error")
+#         print(e)
+#         raise HTTPException(
+#             status_code=status.HTTP_406_NOT_ACCEPTABLE,
+#             detail="Can't update remaining food data to db",
+#             headers={"WWW-Authenticate": "Bearer"},
+#         )
+#     return {"message": "Food remaining updated successfully!"}
+
 # 食材編集画面：食材編集
-@app.put("/food_db/{FoodID}")
-# @app.put("/food_db_new")
-async def update_remaining(FoodID: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
-    print("0000")
+@app.put("/alert_food_fix")
+async def update_remaining(alertFoodPut: FoodAlertPut, current_user: loginUser = Depends(get_current_user)):
     try:
         # foodidで既存の食品レコードを検索
-        food_item = session.query(FoodTable).filter(FoodTable.FoodID == FoodID).first()
-        
+        food_item = session.query(FoodTable).filter(FoodTable.FoodID == alertFoodPut.FoodID).first()
         if not food_item:
             raise HTTPException(status_code=404, detail="Food not found")
 
         # Remaining フィールドを更新
-        food_item.Remaining = remaining
-        food_item.status = status
+        food_item.FoodID = alertFoodPut.FoodID
+        food_item.Remaining = alertFoodPut.remaining
+        food_item.status = alertFoodPut.status
 
         # 変更をデータベースにコミット
         session.commit()
@@ -213,8 +239,12 @@ async def update_remaining(FoodID: int, remaining: int, status: int, current_use
             detail="Can't update remaining food data to db",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return {"message": "Food remaining updated successfully!"}
-###########################################################
+    return {"remaining": alertFoodPut.remaining, "status": alertFoodPut.status}
+
+# # 食材編集画面：食材編集
+# @app.put("/alert_food_fix")
+# async def update_remaining(alertFoodPut: FoodAlertPut, current_user: loginUser = Depends(get_current_user)):
+
 
 # 食材編集画面：食材編集
 @app.put("/food_db")
@@ -264,21 +294,6 @@ async def add_shopping(shopping: ShoppingPost, current_user: loginUser = Depends
             headers={"WWW-Authenticate": "Bearer"},
         )
     return {"message": "shopping created successfully!"}
-
-# @app.post("/eatout_register")  # 適切なエンドポイント名に置き換えてください
-# async def receive_data(data: EatoutData):
-#     # 受け取ったデータをそれぞれの変数に格納
-#     received_date = data.date
-#     received_price = data.price
-#     received_purpose = data.purpose
-
-#     # ここで受け取ったデータを使って何かを実行できます。
-#     # 今回はデモのため、受け取ったデータをそのままレスポンスとして返します。
-#     return {
-#         "received_date": received_date,
-#         "received_price": received_price,
-#         "received_purpose": received_purpose
-#     }
 
 
 # 食費一覧画面：食費取得

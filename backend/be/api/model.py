@@ -93,6 +93,11 @@ class Login(BaseModel):
     email: str
     password: str
 
+class FoodAlertPut(BaseModel):
+    FoodID: int
+    remaining: int
+    status: int
+
 class Shopping(BaseModel):
     ShoppingID: int
     UserID: int
