@@ -501,11 +501,16 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     # 今月の初日を取得
     first_day_of_this_month = today.replace(day=1)
+    if today.month == 12:  # 12月の場合は1月に
+        last_day_of_this_month = date(today.year + 1, 1, 1) - timedelta(days=1)
+    else:
+        last_day_of_this_month = date(today.year, today.month + 1, 1) - timedelta(days=1)
+
 
     # その人の食費計算
     foodcost_result = session.query(func.sum(ShoppingTable.Price).label("totalcost")).filter(
         ShoppingTable.UserID == current_user.UserID,
-        ShoppingTable.Date.between(first_day_of_this_month, today)  
+        ShoppingTable.Date.between(first_day_of_this_month, last_day_of_this_month)  
     ).group_by(
         ShoppingTable.UserID
     ).first()
@@ -535,7 +540,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     # その人のフードロス計算
     foodloss_result = session.query(FoodTable.UserID, func.sum(FoodTable.price).label("totalloss")).filter(
         FoodTable.UserID == current_user.UserID,
-        FoodTable.expiry_date.between(first_day_of_this_month, today), 
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
         FoodTable.status == 0,
         FoodTable.Remaining != 0
     ).group_by(
@@ -586,7 +591,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     b = session.query(gen.c.UserID, func.sum(ShoppingTable.Price).label("total")).join(
         ShoppingTable, gen.c.UserID == ShoppingTable.UserID
     ).filter(
-        ShoppingTable.Date.between(first_day_of_this_month, today)  # dateカラムの値が1ヶ月前と今日の間であることを確認
+        ShoppingTable.Date.between(first_day_of_this_month, last_day_of_this_month)  # dateカラムの値が1ヶ月前と今日の間であることを確認
     ).group_by(
         gen.c.UserID
     ).subquery()
@@ -631,7 +636,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     a = session.query(gen.c.UserID, func.sum(FoodTable.price).label("total")).join(
         FoodTable, gen.c.UserID == FoodTable.UserID
     ).filter(
-        FoodTable.expiry_date.between(first_day_of_this_month, today), 
+        FoodTable.expiry_date.between(first_day_of_this_month, last_day_of_this_month), 
         FoodTable.status == 0,
         FoodTable.Remaining != 0
     ).group_by(
