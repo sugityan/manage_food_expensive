@@ -508,7 +508,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
 
 # 門倉編集分
 @app.get("/compare_cost")
-def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
+async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     user_age = current_user.age
 
@@ -604,7 +604,10 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     ).group_by(
         gen.c.UserID
     ).subquery()
-    
+    print("------------------")
+    print("THIS is foodcost_result: ", b)
+    print("THIS is foodcost_result: ", b.c.total)
+    print("------------------")
     record = session.query(
         case(
             (b.c.total < 30000, "~3万円"),
@@ -692,55 +695,3 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     }
 
     return result
-
-# # 食材一覧画面：食材情報一覧取得
-# @app.get("/get_foods")
-# def get_food_list(userID: int):
-#     foods_list = []
-#     foods = session.query(FoodTable).filter(FoodTable.UserID == userID)
-#     for food in foods:
-#         tmp_food_dict = {}
-#         # 残日数
-#         remain_days = food.expiry_date - food.Date
-#         tmp_food_dict["Remaining_days"] = remain_days.days
-#         tmp_food_dict["name"] = food.name
-#         tmp_food_dict["category"] = food.category
-#         tmp_food_dict["Remaining"] = food.Remaining
-#         # 経過
-#         elapsed_days = datetime.date.today() - food.Date
-#         tmp_food_dict["elapsed_days"] = elapsed_days.days
-#         foods_list.append(tmp_food_dict)
-#     return foods_list
-
-
-
-
-
-
-# @app.post("/eatout_register")
-# async def add_data(data: EatoutData):
-#     # 文字列をdatetime.dateに変換
-#     converted_date = datetime.datetime.strptime(data.date, "%Y-%m-%d").date()
-#     actual_db_item = Shopping(UserID=1, Date=converted_date, Price=data.price, Purpose=data.purpose)
-#     session.add(actual_db_item)
-#     session.commit()
-
-#     return {"message": "Data added successfully!"}
-    
-    
-
-
-
-# #　ログイン画面：ユーザー情報一覧取得
-# @app.get("/get_users_dict")
-# def get_users_dict():
-#     users_dict = {}
-#     users_list = session.query(UserTable).all()
-#     for user in users_list:
-#         email = user.Email
-#         users_dict[email] = user
-#     return users_dict
-
-
-
-
