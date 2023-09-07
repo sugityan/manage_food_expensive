@@ -1,42 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import Sidebar from "../components/sidebar";
 import Header from "../components/header";
 import ShowPiChart from "../components/showPiChart";
 import { Typography, Button } from "@material-tailwind/react";
+import axios from "axios";
+
 
 const Home = () => {
-  console.log(localStorage.getItem("token"));
-  ;
-  const chartData = [
-    { name: "Category A", value: 400 },
-    { name: "Category B", value: 300 },
-    { name: "Category C", value: 200 },
-    { name: "Category D", value: 150 },
-    { name: "Category E", value: 100 },
-  ];
+  const [dataDict, setDataDict] = useState({
+    monthly_cost: 0,
+    monthly_foodloss: 0,
+    cost_graph: [],
+    remain_graph: [],
+    foodloss_graph: [],
+  });
+
   const baseUrl = "http://127.0.0.1:8000";
 
-  const foodPrice = 10000;
-  const foodLoss = 10000;
+  useEffect(() => {
+    const fetchAlertFoods = async () => {
+      try {
+        const response = await axios.get(baseUrl + "/graph_data", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        console.log("sidebarのget_food_listのレスポンス");
+        console.log(response);
+        if (response.status === 200) {
+          console.log("通信成功");
+          console.log(response.data)
+          setDataDict(response.data);
+          console.log(dataDict.remain_graph)
+        } else {
+          console.log("バックエンドからのエラー");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  // const handleGetChatData = async (event) => {
-
-  //   try {
-  //     const response = await axios.get(baseUrl + "/graph_data", {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         "Authorization": `Bearer ${localStorage.getItem("token")}`,
-  //       }
-  //     });
-  //     if (response.statusText === "OK") {
-  //       foodList = response.data
-  //     }
-      
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+    fetchAlertFoods();
+  }, []);
 
   return (
     <>
@@ -49,12 +56,12 @@ const Home = () => {
               <div className="flex flex-col mr-10">
                 <Typography variant="h3">今月の食費</Typography>
                 <Typography variant="h1" className="mb-5">
-                  ￥{foodPrice}
+                  ￥{dataDict.monthly_cost}
                 </Typography>
               </div>
               <div className="flex flex-col ">
                 <Typography variant="h3">今月のフードロス</Typography>
-                <Typography variant="h1">￥{foodLoss}</Typography>
+                <Typography variant="h1">￥{dataDict.monthly_foodloss}</Typography>
               </div>
             </div>
             <div className="flex gap-10">
@@ -66,9 +73,9 @@ const Home = () => {
               </a>
             </div>
           </div>
-          <ShowPiChart data={chartData} title="食費" />
-          <ShowPiChart data={chartData} title="残量率" />
-          <ShowPiChart data={chartData} title="フードロス率" />
+          <ShowPiChart data={dataDict.cost_graph} title="食費" />
+          <ShowPiChart data={dataDict.remain_graph} title="残量率" />
+          <ShowPiChart data={dataDict.foodloss_graph} title="フードロス率" />
         </div>
       </div>
     </>

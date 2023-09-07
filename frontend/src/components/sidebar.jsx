@@ -21,9 +21,8 @@ import axios from "axios";
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [remain, setRemain] = useState(null);
+  const [remain, setRemain] = useState("");
   const [foodList, setFoodList] = useState(null);
-  const [registerPopoverInput, setRegisterPopoverInput] = useState(true);
   const baseUrl = "http://127.0.0.1:8000";
 
   const handleToggleSidebar = () => {
@@ -33,9 +32,10 @@ const Sidebar = () => {
   const handleRegisterInput = async (food) => {
     try {
       const response = await axios.put(
-        baseUrl + `/food_db/${food.FoodID}`,
+        baseUrl + `/food_db/${food.foodID}`,
+        // baseUrl + `/food_db_new`,
         {
-          Remaining: remain,
+          remaining: remain,
           status: 1,
         },
         {
@@ -46,23 +46,25 @@ const Sidebar = () => {
         }
       );
       console.log(response);
-      if (response.statusText === "OK") {
+      if (response.status === 200) {
         console.log("記録完了");
-        setRemain(null);
+        setRemain("");
       } else {
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
     } catch (error) {
+      console.log("food:"+ food.foodID);
+      console.log("remain:"+remain);
       console.log("通信失敗");
     }
   };
 
-  const handleDiscardInput = async (food) => {
+  const handleDiscard = async (food) => {
     try {
       const response = await axios.put(
         baseUrl + `/food_db/${food.FoodID}`,
         {
-          Remaining: remain,
+          remaining: food.Remaining,
           status: 0,
         },
         {
@@ -73,9 +75,9 @@ const Sidebar = () => {
         }
       );
       console.log(response);
-      if (response.statusText === "OK") {
+      if (response.status === 200) {
         console.log("廃棄・使い切り完了");
-        setRemain(null);
+        setRemain();
       } else {
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
@@ -96,7 +98,7 @@ const Sidebar = () => {
         });
         console.log("sidebarのget_food_listのレスポンス");
         console.log(response);
-        if (response.statusText === "OK") {
+        if (response.status === 200) {
           console.log("通信成功");
           console.log(response.data);
           setFoodList(response.data);
@@ -169,22 +171,22 @@ const Sidebar = () => {
                     </Typography>
                     <div className="flex gap-2">
                       <Input
-                        label="残量(%)"
+                        label={`記録されている残量：${food.Remaining}%`}
                         type="number"
+                        value={remain}
                         onChange={(event) => setRemain(event.target.value)}
                       />
                       <Button
                         variant="gradient"
                         size="sm"
                         onClick={() => handleRegisterInput(food)}
-                        
                       >
                         記録
                       </Button>
                       <Button
                         variant="gradient"
                         size="sm"
-                        onClick={() => handleDiscardInput(food)}
+                        onClick={() => handleDiscard(food)}
                       >
                         捨てる
                       </Button>

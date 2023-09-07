@@ -10,7 +10,7 @@ const ShowPiChart = ({ data, title }) => {
       <Typography variant="h5">{title}</Typography>
       <PieChart width={400} height={300}>
         <Pie
-          dataKey="value"
+          dataKey="cost"
           isAnimationActive={false}
           data={data}
           cx="50%"

@@ -126,6 +126,35 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     
     return {"access_token": access_token, "token_type": "bearer"}
 
+
+# 食材登録画面：食材登録
+@app.post("/food_db")
+async def add_food(food: FoodPost, current_user: loginUser = Depends(get_current_user)):
+    try:
+        new_food = FoodTable(name=food.name,
+                        category=food.category,
+                        price=food.price,
+                        expiry_date=food.expiry_date,
+                        Date=food.Date,
+                        amount=food.amount,
+                        unit=food.unit,
+                        memo=food.memo,
+                        Remaining=food.Remaining,
+                        UserID=current_user.UserID,
+                        status=food.status)
+        session.add(new_food)
+        session.commit()
+    except Exception as e:
+        print("This is post /post_food error")
+        print(e)
+        raise HTTPException(
+            status_code=status.HTTP_406_NOT_ACCEPTABLE,
+            detail="Can't post food data to db",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return {"message": "Food created successfully!"}
+
+
 # ホーム画面: foodデータを取得
 @app.get("/food_db")
 async def get_food_db(current_user: loginUser = Depends(get_current_user)):
@@ -166,14 +195,17 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
                 tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
             tmp_food_dict["name"] = food.name
             tmp_food_dict["foodID"] = food.FoodID
+            tmp_food_dict["Remaining"] = food.Remaining
             foods_list.append(tmp_food_dict)
     # 残り日数で辞書をソート
-    sorted_foods_list = sorted(foods_list, key=lambda x: x["Remaining_days"])
+    sorted_foods_list = sorted(foods_list, key=lambda x: x["Remaining_days"], reverse=True)
     return sorted_foods_list
 
 # 食材編集画面：食材編集
 @app.put("/food_db/{FoodID}")
+# @app.put("/food_db_new")
 async def update_remaining(FoodID: int, remaining: int, status: int, current_user: loginUser = Depends(get_current_user)):
+    print("0000")
     try:
         # foodidで既存の食品レコードを検索
         food_item = session.query(FoodTable).filter(FoodTable.FoodID == FoodID).first()
@@ -184,6 +216,7 @@ async def update_remaining(FoodID: int, remaining: int, status: int, current_use
         # Remaining フィールドを更新
         food_item.Remaining = remaining
         food_item.status = status
+
         # 変更をデータベースにコミット
         session.commit()
     except Exception as e:
@@ -258,7 +291,7 @@ async def get_cost_day(current_user: loginUser = Depends(get_current_user)):
             func.sum(ShoppingTable.Price).label("TotalShoppingPrice")).\
             filter(ShoppingTable.UserID == current_user.UserID).\
                 group_by(ShoppingTable.Date)
-        food_costs = session.query(
+        costs = session.query(
             FoodTable.Date, 
             func.sum(FoodTable.price).label("TotalFoodPrice")).\
             filter(FoodTable.UserID == current_user.UserID).\
@@ -414,7 +447,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             tmp_dict = {}
             tmp_dict["category"] = category_list[k]
             remain_rate = int(v*100/total_remain_cost)
-            tmp_dict["remain_rate"] = remain_rate
+            tmp_dict["cost"] = remain_rate
             total_remain_cost_list.append(tmp_dict)
 
 
@@ -438,7 +471,7 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
             tmp_dict = {}
             tmp_dict["category"] = category_list[k]
             foodloss_rate = int(v*100/total_foodloss_cost)
-            tmp_dict["foodloss_rate"] = foodloss_rate
+            tmp_dict["cost"] = foodloss_rate
             total_foodloss_cost_list.append(tmp_dict)
 
         all_info_dict["monthly_cost"] = total_cost
