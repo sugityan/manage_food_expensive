@@ -37,6 +37,19 @@ def create_user(user: User):
 
     return {"message": "User created successfully!"}
 
+# async def return_map_values():
+#     get => food_db;
+
+#     # 計算式
+
+
+#     return {
+#         "cost": [{"name": "categoryA", "value": 1000}, {"name": "categoryB", "value": 1000}, {"name": "categoryC", "value": 1000}],
+#         "remaining": [{"name": "categoryB", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
+#         "foodloss": [{"name": "categoryC", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
+#         "sum_cost": 1000,
+#     }
+
 
 # ログイン画面：　ログイン
 @app.post("/token", response_model=Token)
