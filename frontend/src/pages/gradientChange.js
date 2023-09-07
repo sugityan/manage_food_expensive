@@ -32,9 +32,10 @@ function GradientChange() {
     event.preventDefault();
 
     try {
-      const response = await axios.post(
+      const response = await axios.put(
         baseUrl + "/food_db",
         {
+          FoodID: food.FoodID,
           name: formData.name,
           category: formData.category,
           price: formData.price,
@@ -43,8 +44,8 @@ function GradientChange() {
           amount: formData.amount,
           unit: formData.unit,
           memo: formData.memo,
-          Remaining: 100,
-          status: 1,
+          Remaining: food.Remaining,
+          status: food.status,
         },
         {
           headers: {
