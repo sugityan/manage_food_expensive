@@ -487,7 +487,10 @@ async def get_graph_data(current_user: loginUser = Depends(get_current_user)):
 
         all_info_dict["monthly_cost"] = total_cost
         all_info_dict["monthly_foodloss"] = total_foodloss_cost
-        all_info_dict["cost_graph"] = total_cost_list
+        if total_cost_list != []:
+            all_info_dict["cost_graph"] = total_cost_list
+        else:
+            all_info_dict["cost_graph"] = 0
         all_info_dict["remain_graph"] = total_remain_cost_list
         all_info_dict["foodloss_graph"] = total_foodloss_cost_list
 
