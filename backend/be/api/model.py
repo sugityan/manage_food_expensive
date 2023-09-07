@@ -62,17 +62,32 @@ class FoodTable(Base):
     Remaining = Column(Integer)
     status = Column(Integer, nullable=False)
 
-# モデル定義 
-class TestUser(BaseModel):
-    id: int
-    name: str
-    email: str
+    def toDict(self):
+        return {
+            "FoodID": self.FoodID,
+            "UserID": self.UserID,
+            "name": self.name,
+            "category": self.category,
+            "price": self.price,
+            "expiry_date": self.expiry_date,
+            "Date": self.Date,
+            "amount": self.amount,
+            "unit": self.unit,
+            "memo": self.memo,
+            "Remaining": self.Remaining,
+            "status": self.status
+        }
 
+
+# モデル定義 
 class User(BaseModel):
     Password: str
     p_num: int
     age: int
     Email: str
+
+class loginUser(User):
+    UserID: int
 
 
 class Shopping(BaseModel):
@@ -106,14 +121,12 @@ class UserNew(BaseModel):
     age: int
     Email: str
 
-class ShoppingNew(BaseModel):
-    UserID: int
+class ShoppingPost(BaseModel):
     Date: date
     Purpose: int
     Price: int
 
-class FoodNew(BaseModel):
-    UserID: int
+class FoodPost(BaseModel):
     name: str
     category: int
     price: int
@@ -124,6 +137,11 @@ class FoodNew(BaseModel):
     memo: str
     Remaining: int
     status: int
+
+class CostByDate(BaseModel):
+    Date: date
+    Purpose: int
+    Price: int
 
 class EatoutData(BaseModel):
     date: str  # YYYY-MM-DD 形式の文字列
