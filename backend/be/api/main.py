@@ -600,6 +600,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     if foodloss_result:
         foodloss = foodloss_result.totalloss
+        foodloss = int(foodloss)
     else:
         foodloss = 0
 
