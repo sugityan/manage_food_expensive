@@ -37,6 +37,19 @@ def create_user(user: User):
 
     return {"message": "User created successfully!"}
 
+# async def return_map_values():
+#     get => food_db;
+
+#     # 計算式
+
+
+#     return {
+#         "cost": [{"name": "categoryA", "value": 1000}, {"name": "categoryB", "value": 1000}, {"name": "categoryC", "value": 1000}],
+#         "remaining": [{"name": "categoryB", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
+#         "foodloss": [{"name": "categoryC", "value": 1000}, {"name": "category", "value": 1000}, {"name": "category", "value": 1000}],
+#         "sum_cost": 1000,
+#     }
+
 
 # ログイン画面：　ログイン
 @app.post("/token", response_model=Token)
@@ -98,6 +111,13 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
     for food in foods:
         tmp_food_dict = {}
         remain_days = food.expiry_date - food.Date
+        if remain_days.days <= -1:
+            tmp_food_dict["Remaining_days"] = "期限切れ"
+        elif remain_days.days == 0:
+            tmp_food_dict["Remaining_days"] = "今日中"
+        else:
+             tmp_food_dict["Remaining_days"] = "後" + remain_days.days.toString() + "日"
+
         tmp_food_dict["Remaining_days"] = remain_days.days
         tmp_food_dict["name"] = food.name
         foods_list.append(tmp_food_dict)
