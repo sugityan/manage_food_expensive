@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Header from "../components/header";
 import Sidebar from "../components/sidebar";
 import {
@@ -12,32 +13,100 @@ import {
 } from "recharts";
 import { Tooltip, Typography } from "@material-tailwind/react";
 
-const foodcostRanking = "500";
-const foodcost = 6000;
-const foodlossData = [
-  { name: "0", number: 4000 },
-  { name: "500", number: 3000 },
-  { name: "1000", number: 2000 },
-  { name: "2000", number: 1000 },
-  { name: "3000", number: 290 },
-  { name: "4000", number: 20 },
-  { name: "5000", number: 1 },
-];
-
-
-const foodlossPosition = "1000";
-const foodloss = 5000;
-const foodcostData = [
-  { name: "0", number: 1000 },
-  { name: "500", number: 3000 },
-  { name: "1000", number: 2000 },
-  { name: "2000", number: 1000 },
-  { name: "3000", number: 290 },
-  { name: "4000", number: 20 },
-  { name: "5000", number: 1 },
-];
 
 const Compare = () => {
+  const [foodcostRanking, setFoodcostRanking] = useState("~3万円");
+  const [foodcost, setFoodcost] = useState(5000);
+  const [foodcostData, setFoodcostData] = useState([
+    {
+      "name": "~3万円",
+      "number": 0
+    },
+    {
+      "name": "3~4万円",
+      "number": 0
+    },
+    {
+      "name": "4~5万円",
+      "number": 0
+    },
+    {
+      "name": "5~6万円",
+      "number": 0
+    },
+    {
+      "name": "6~8万円",
+      "number": 0
+    },
+    {
+      "name": "8~10万円",
+      "number": 0
+    },
+    {
+      "name": "10万円~",
+      "number": 0
+    }
+  ]);
+  const [foodlossPosition, setFoodlossPosition] = useState("~千円");
+  const [foodloss, setFoodloss] = useState(500);
+  const [foodlossData, setFoodlossData] = useState([
+    {
+      "name": "~千円",
+      "number": 0
+    },
+    {
+      "name": "1~2千円",
+      "number": 0
+    },
+    {
+      "name": "2~3千円",
+      "number": 0
+    },
+    {
+      "name": "3~5千円",
+      "number": 0
+    },
+    {
+      "name": "5~7千円",
+      "number": 0
+    },
+    {
+      "name": "7千~1万円",
+      "number": 0
+    },
+    {
+      "name": "1万円~",
+      "number": 0
+    }
+  ]);
+  const baseUrl = "http://127.0.0.1:8000";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(baseUrl + "/compare_cost", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = response.data;
+        console.log(data);
+
+        setFoodcostRanking(data.foodcostRanking);
+        setFoodcost(data.foodcost);
+        setFoodlossData(data.foodlossData);
+        setFoodlossPosition(data.foodlossPosition);
+        setFoodloss(data.foodloss);
+        setFoodcostData(data.foodcostData);
+      } catch (error) {
+        console.error("Error fetching the data", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <Header />
@@ -58,17 +127,16 @@ const Compare = () => {
               data={foodlossData}
               margin={{
                 top: 5,
-                right: 30,
-                left: 20,
+                right: 10,
+                left: 10,
                 bottom: 5,
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" tick={{ fontSize: '12px' }} interval={0}/>
               <YAxis />
               <Tooltip />
-              <Legend />
-              <Bar dataKey="number">
+              <Bar dataKey="number" barSize={30}>
                 {foodlossData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -100,11 +168,10 @@ const Compare = () => {
               }}
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
+              <XAxis dataKey="name" tick={{ fontSize: '12px' }} interval={0}/>
               <YAxis />
               <Tooltip />
-              <Legend />
-              <Bar dataKey="number">
+              <Bar dataKey="number"barSize={30}>
                 {foodcostData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}

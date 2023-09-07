@@ -521,15 +521,15 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     if foodcost < 30000:
         foodcostRanking = "~3万円"
     elif foodcost >= 30000 and foodcost < 40000:
-        foodcostRanking = "3万円~4万円"
+        foodcostRanking = "3~4万円"
     elif foodcost >= 40000 and foodcost < 50000:
-        foodcostRanking = "3万円~4万円"
+        foodcostRanking = "4~5万円"
     elif foodcost >= 50000 and foodcost < 60000:
-        foodcostRanking = "3万円~4万円"
+        foodcostRanking = "5~6万円"
     elif foodcost >= 60000 and foodcost < 80000:
-        foodcostRanking = "3万円~4万円"
+        foodcostRanking = "6~8万円"
     elif foodcost >= 80000 and foodcost < 100000:
-        foodcostRanking = "3万円~4万円"
+        foodcostRanking = "8~10万円"
     else:
         foodcostRanking = "10万円~"
 
@@ -553,15 +553,15 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     if foodloss < 1000:
         foodlossPosition = "~千円"
     elif foodloss >= 1000 and foodcost < 2000:
-        foodlossPosition = "千円~2千円"
-    elif foodloss >= 2000 and foodcost < 2000:
-        foodlossPosition = "2千円~3千円"
+        foodlossPosition = "1~2千円"
+    elif foodloss >= 2000 and foodcost < 3000:
+        foodlossPosition = "2~3千円"
     elif foodloss >= 3000 and foodcost < 5000:
-        foodlossPosition = "3千円~5千円"
+        foodlossPosition = "3~5千円"
     elif foodloss >= 5000 and foodcost < 7000:
-        foodlossPosition = "5千円~7千円"
+        foodlossPosition = "5~7千円"
     elif foodloss >= 7000 and foodcost < 10000:
-        foodlossPosition = "7千円~1万円"
+        foodlossPosition = "7千~1万円"
     else:
         foodlossPosition = "1万円~"
 
@@ -596,11 +596,11 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     record = session.query(
         case(
             (b.c.total < 30000, "~3万円"),
-            ((b.c.total >= 30000) & (b.c.total < 40000), "3万円~4万円"),
-            ((b.c.total >= 40000) & (b.c.total < 50000), "4万円~5万円"),
-            ((b.c.total >= 50000) & (b.c.total < 60000), "5万円~6万円"),
-            ((b.c.total >= 60000) & (b.c.total < 80000), "6万円~8万円"),
-            ((b.c.total >= 80000) & (b.c.total < 100000), "8万円~10万円"),
+            ((b.c.total >= 30000) & (b.c.total < 40000), "3~4万円"),
+            ((b.c.total >= 40000) & (b.c.total < 50000), "4~5万円"),
+            ((b.c.total >= 50000) & (b.c.total < 60000), "5~6万円"),
+            ((b.c.total >= 60000) & (b.c.total < 80000), "6~8万円"),
+            ((b.c.total >= 80000) & (b.c.total < 100000), "8~10万円"),
             else_="10万円~"
         ).label("name"),
         func.count().label("number")
@@ -610,11 +610,11 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     price_ranges = [
     "~3万円",
-    "3万円~4万円",
-    "4万円~5万円",
-    "5万円~6万円",
-    "6万円~8万円",
-    "8万円~10万円",
+    "3~4万円",
+    "4~5万円",
+    "5~6万円",
+    "6~8万円",
+    "8~10万円",
     "10万円~"
     ]
 
@@ -641,11 +641,11 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     record = session.query(
         case(
             (b.c.total < 1000, "~千円"),
-            ((b.c.total >= 1000) & (b.c.total < 2000), "千円~2千円"),
-            ((b.c.total >= 2000) & (b.c.total < 3000), "2千円~3千円"),
-            ((b.c.total >= 3000) & (b.c.total < 5000), "3千円~5千円"),
-            ((b.c.total >= 5000) & (b.c.total < 7000), "5千円~7千円"),
-            ((b.c.total >= 7000) & (b.c.total < 10000), "7千円~1万円"),
+            ((b.c.total >= 1000) & (b.c.total < 2000), "1~2千円"),
+            ((b.c.total >= 2000) & (b.c.total < 3000), "2~3千円"),
+            ((b.c.total >= 3000) & (b.c.total < 5000), "3~5千円"),
+            ((b.c.total >= 5000) & (b.c.total < 7000), "5~7千円"),
+            ((b.c.total >= 7000) & (b.c.total < 10000), "7千~1万円"),
             else_="1万円~"
         ).label("name"),
         func.count().label("number")
@@ -653,11 +653,11 @@ def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
 
     loss_ranges = [
         "~千円",
-        "千円~2千円",
-        "2千円~3千円",
-        "3千円~5千円",
-        "5千円~7千円",
-        "7千円~1万円",
+        "1~2千円",
+        "2~3千円",
+        "3~5千円",
+        "5~7千円",
+        "7千~1万円",
         "1万円~"
     ]
 
