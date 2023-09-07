@@ -2,6 +2,7 @@
 
 ## 目次
 - [目次](#目次)
+- [ログインアカウント](#loginaccount)
 - [frontend](#frontend)
 - [SwaggerUIの起動(backend)](#swaggeruiの起動backend)
 - [Dockerの使用・MySQLの確認](#dockerの使用・mysqlの確認)
@@ -13,7 +14,9 @@
         - [Foodテーブル](#foodテーブル)
         - [Shoppingテーブル](#shoppingテーブル)
 
-
+## LoginAccount
+email: test
+password: password
 
 ## frontend
 1. cd frontend
