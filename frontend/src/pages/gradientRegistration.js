@@ -8,7 +8,7 @@ function GradientRegistration() {
   const baseUrl = "http://127.0.0.1:8000";
   const [formData, setFormData] = useState({
     name: "",
-    category: "0",
+    category: "",
     date: "",
     limit: "",
     price: "",
@@ -20,7 +20,6 @@ function GradientRegistration() {
   const navigate = useNavigate();
 
   const handleChange = (event) => {
-    console.log(formData.category);
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -52,7 +51,7 @@ function GradientRegistration() {
       );
       if (response.status === 200) {
         setResult(response.data.result);
-        navigate("/home"); // /homeにリダイレクト
+        navigate("/home");
       } else {
         console.error("Error sending data:", response.data);
       }
@@ -66,7 +65,7 @@ function GradientRegistration() {
       <Header />
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex justify-center w-screen">
+        <div className="flex justify-center  w-screen">
           <form
             onSubmit={handleSubmit}
             action="/"
@@ -88,11 +87,12 @@ function GradientRegistration() {
               <select
                 id="category"
                 name="category"
+                value={formData.category}
                 onChange={handleChange}
                 required
                 className="pr-5 pl-5 rounded-full border-2"
               >
-                <option selected value="">
+                <option value="">
                   選択してください
                 </option>
                 <option value="0">肉類・魚介類・卵</option>
@@ -133,7 +133,7 @@ function GradientRegistration() {
               <p>
                 金額　
                 <input
-                  typte="number"
+                  type="number"
                   id="price"
                   name="price"
                   required
@@ -166,21 +166,23 @@ function GradientRegistration() {
               </p>
             </div>
             <div className="w-full">
-              メモ　
+              メモ<br />
               <textarea
                 id="memo"
                 name="memo"
+                rows="1"
                 onChange={handleChange}
-                className="pr-5 pl-5 rounded-3xl border-2 w-full"
+                className="w-full rounded-md border-2"
               />
             </div>
-            <p className="flex justify-end">
-              <input
+            <div className="flex justify-center mt-100">
+              <button
                 type="submit"
-                value="登録"
-                className="pr-5 pl-5 rounded-full border-2"
-              />
-            </p>
+                className="w-1/3 text-3xl bg-yellow-500 rounded-lg shadow-lg hover:bg-yellow-600"
+              >
+                登録
+              </button>
+            </div>
           </form>
         </div>
       </div>
