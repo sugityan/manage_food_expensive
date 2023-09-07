@@ -135,7 +135,7 @@ const Sidebar = () => {
           className={showSidebar ? "ml-auto" : "mr-auto"}
           onClick={handleToggleSidebar}
         >
-          <Badge overlap="circular" invisible={false}>
+          {/* <Badge overlap="circular" placement="right">
             <IconButton>
               {showSidebar ? (
                 <ChevronDoubleLeftIcon className="h-4 w-4" />
@@ -143,7 +143,7 @@ const Sidebar = () => {
                 <ChevronDoubleRightIcon className="h-4 w-4" />
               )}
             </IconButton>
-          </Badge>
+          </Badge> */}
         </div>
       </div>
       {showSidebar && (
