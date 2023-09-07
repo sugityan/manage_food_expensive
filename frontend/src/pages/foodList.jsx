@@ -54,8 +54,8 @@ const FoodListItem = ({ food }) => {
   };
 
   return (
-    <ListItem onClick={handleItemClick} className="cursor-pointer">
-      <div className="flex items-center w-full">
+    <ListItem className="cursor-pointer">
+      <div className="flex items-center w-full" onClick={handleItemClick}>
         <div className="w-1/6 text-center">{food.name}</div>
         <div className="w-1/6 text-center">
           {convertCategory[food.category]}
@@ -98,23 +98,23 @@ const FoodListItem = ({ food }) => {
             </div>
             <Progress value={food.Remaining} max={100} />
           </div>
-          <Popover placement="bottom">
-            <PopoverHandler>
-              <Button className="w-40 ml-10">残量設定</Button>
-            </PopoverHandler>
-            {/* 残量の変更をする部分 */}
-            <PopoverContent className="w-96">
-              <Typography variant="h6" color="blue-gray" className="mb-6">
-                残量を設定してください
-              </Typography>
-              <div className="flex gap-2">
-                <Input label="残量(%)" type="number" />
-                <Button variant="gradient">OK</Button>
-              </div>
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
+      <Popover placement="bottom">
+        <PopoverHandler>
+          <Button className="w-40 ml-10">残量設定</Button>
+        </PopoverHandler>
+        {/* 残量の変更をする部分 */}
+        <PopoverContent className="w-96">
+          <Typography variant="h6" color="blue-gray" className="mb-6">
+            残量を設定してください
+          </Typography>
+          <div className="flex gap-2">
+            <Input label="残量(%)" type="number" />
+            <Button variant="gradient">OK</Button>
+          </div>
+        </PopoverContent>
+      </Popover>
     </ListItem>
   );
 };
