@@ -30,7 +30,7 @@ const ShowPiChart = ({ data, title }) => {
           <Label
             valueKey="cost"
             position="center"
-            content={({ value }) => `${value}%`}
+            content={({ value }) => `${value}円`}
           />
         </Pie>
         <Legend
@@ -40,7 +40,7 @@ const ShowPiChart = ({ data, title }) => {
             color: COLORS[entry.category % COLORS.length], // カスタムカラー
           }))}
           />
-        <Tooltip formatter={(value) => [`${value}%`]} />
+        <Tooltip formatter={(value) => [`${value}円`]} />
       </PieChart>
     </div>
   );

@@ -160,8 +160,9 @@ async def get_food_db(current_user: loginUser = Depends(get_current_user)):
             FoodTable.UserID == current_user.UserID
         )
         for food in foods_lists:
-            foodId = food.FoodID
-            foods_dict[foodId] = food.toDict()
+            if food.status == 1 and food.Remaining != 0:
+                foodId = food.FoodID
+                foods_dict[foodId] = food.toDict()
     except Exception as e:
         print("This is post /food_db error")
         print(e)
@@ -179,9 +180,7 @@ async def get_alert_food_list(current_user: loginUser = Depends(get_current_user
     foods_list = []
     foods = session.query(FoodTable).filter(FoodTable.UserID == current_user.UserID)
     for food in foods:
-        if food.status == 0:
-            continue
-        else:
+        if food.status == 1 and food.Remaining != 0:
             tmp_food_dict = {}
             remain_days = food.expiry_date - date.today()
             if remain_days.days <= -1:
@@ -360,7 +359,7 @@ async def get_cost_day(current_user: loginUser = Depends(get_current_user)):
 
 
 # 食材一覧画面：食材情報一覧取得
-@app.get("/foods_info")
+@app.get("/food_info")
 async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     foods_list = []
     # UserIdが一致する食材を取得
@@ -369,24 +368,23 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
             FoodTable.UserID == current_user.UserID
         )
         for food in foods_lists:
-            if food.status == 0:
-                continue
-            tmp_food_dict = {}
-            # 残日数
-            remain_days = food.expiry_date - date.today()
-            if remain_days.days <= -1:
-                tmp_food_dict["Remaining_days"] = "期限切れ"
-            elif remain_days.days == 0:
-                tmp_food_dict["Remaining_days"] = "今日中"
-            else:
-                tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
-            tmp_food_dict["name"] = food.name
-            tmp_food_dict["category"] = food.category
-            tmp_food_dict["Remaining"] = food.Remaining
-            # 経過
-            elapsed_days = date.today() - food.Date
-            tmp_food_dict["Elapsed_days"] = str(elapsed_days.days) + "日"
-            foods_list.append(tmp_food_dict)
+            if food.status == 1:
+                tmp_food_dict = {}
+                # 残日数
+                remain_days = food.expiry_date - date.today()
+                if remain_days.days <= -1:
+                    tmp_food_dict["Remaining_days"] = "期限切れ"
+                elif remain_days.days == 0:
+                    tmp_food_dict["Remaining_days"] = "今日中"
+                else:
+                    tmp_food_dict["Remaining_days"] = "後" + str(remain_days.days) + "日"
+                tmp_food_dict["name"] = food.name
+                tmp_food_dict["category"] = food.category
+                tmp_food_dict["Remaining"] = food.Remaining
+                # 経過
+                elapsed_days = date.today() - food.Date
+                tmp_food_dict["Elapsed_days"] = str(elapsed_days.days) + "日"
+                foods_list.append(tmp_food_dict)
     except Exception as e:
         print("This is post /food_db error")
         print(e)
