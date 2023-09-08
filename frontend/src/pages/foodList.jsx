@@ -31,7 +31,7 @@ const convertCategory = [
 
 const FoodListHeader = () => {
   return (
-    <ListItem className="bg-gray-100">
+    <ListItem className="bg-gray-100 " disabled={true}>
       <div className="flex items-center w-full">
         <div className="w-1/6 font-bold text-center">商品名</div>
         <div className="w-1/6 font-bold text-center">カテゴリ</div>
@@ -41,6 +41,7 @@ const FoodListHeader = () => {
         <div className="w-1/6 font-bold text-center">数量</div>
         <div className="w-1/12 mr-5 font-bold text-center">メモ</div>
         <div className="w-2/5 font-bold text-center">残量</div>
+        <Button className="w-40 ml-10 opacity-0 disabled:">残量設定</Button>
       </div>
     </ListItem>
   );
@@ -81,13 +82,11 @@ const FoodListItem = ({ food }) => {
         console.log("バックエンドからエラーが帰ってきてるよ");
       }
     } catch (error) {
-      console.log("food:"+ food.foodID);
-      console.log("remain:"+remain);
+      console.log("food:" + food.foodID);
+      console.log("remain:" + remain);
       console.log("通信失敗");
     }
   };
-
-  
 
   return (
     <ListItem className="cursor-pointer">
@@ -147,10 +146,18 @@ const FoodListItem = ({ food }) => {
           </Typography>
           <div className="flex gap-2">
             {/* <Input label={`残量(%)`} type="number" value={ remain } onClick={() => handleRemainingInput(food)} /> */}
-            <Input label={`残量(%)`} type="number" value={ remain } 
-            onChange={(event) => setRemain(event.target.value)}
+            <Input
+              label={`残量(%)`}
+              type="number"
+              value={remain}
+              onChange={(event) => setRemain(event.target.value)}
             />
-            <Button variant="gradient" onClick={() => handleRemainingInput(food)}>OK</Button>
+            <Button
+              variant="gradient"
+              onClick={() => handleRemainingInput(food)}
+            >
+              OK
+            </Button>
           </div>
         </PopoverContent>
       </Popover>
