@@ -55,7 +55,7 @@ const Header = () => {
           href="home"
           className="mr-4 cursor-pointer py-1.5 text-2xl font-bold"
         >
-          Food Server
+          Food Saver
         </Typography>
         <div className="flex items-center gap-4">
           <div className="mr-4 hidden lg:block">{navList}</div>
