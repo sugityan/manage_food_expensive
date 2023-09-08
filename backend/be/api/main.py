@@ -12,6 +12,9 @@ from jose import jwt, JWTError
 from functions.check_user import get_current_user
 from sqlalchemy import func
 from sqlalchemy import case
+from sqlalchemy import and_
+
+
 
 
 app = FastAPI()
@@ -662,36 +665,49 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
     )
 
     # フードロスのグラフように分類
+    # ロス額の一覧
     sub = (
         session.query(
             gen.c.UserID,
-            (FoodTable.Remaining * FoodTable.price / 100).label("loss_value"),
+            case(
+                # ここでリストの角括弧[]を取り除きました。
+                (
+                    and_(
+                        FoodTable.expiry_date.between(
+                            first_day_of_this_month, last_day_of_this_month
+                        ),
+                        FoodTable.status == 0,
+                        FoodTable.Remaining != 0
+                    ),
+                    FoodTable.Remaining * FoodTable.price / 100
+                ),
+                else_=0
+            ).label("loss_value"),
         )
-        .join(FoodTable, gen.c.UserID == FoodTable.UserID)
-        .filter(
-            FoodTable.expiry_date.between(
-                first_day_of_this_month, last_day_of_this_month
-            ),
-            FoodTable.status == 0,
-            FoodTable.Remaining != 0,
-        )
+        .outerjoin(FoodTable, gen.c.UserID == FoodTable.UserID)
         .subquery()
     )
 
+
+    # # ロス額のユーザーごとの合計
     foodloss_result = (
         session.query(sub.c.UserID, func.sum(sub.c.loss_value).label("total"))
         .group_by(sub.c.UserID)
         .subquery()
     )
 
+
+
+    # # Foodテーブルの食材費全部合計
     a = (
-        session.query(gen.c.UserID, func.sum(FoodTable.price).label("total"))
-        .join(FoodTable, gen.c.UserID == FoodTable.UserID)
-        .filter(
-            FoodTable.expiry_date.between(
-                first_day_of_this_month, last_day_of_this_month
-            ),
+        session.query(
+            gen.c.UserID,
+            func.coalesce(func.sum(case(
+                (FoodTable.Date.between(first_day_of_this_month, last_day_of_this_month), FoodTable.price),
+                else_=0
+            )), 0).label("total")
         )
+        .outerjoin(FoodTable, gen.c.UserID == FoodTable.UserID)
         .group_by(gen.c.UserID)
         .subquery()
     )
@@ -733,6 +749,7 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         .all()
     )
 
+
     loss_ranges = ["~千円", "1~2千円", "2~3千円", "3~5千円", "5~7千円", "7千~1万円", "1万円~"]
     record_dict = {item[0]: item[1] for item in record}
     # 最終結果のリストを作成します。
@@ -744,24 +761,31 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         for loss_range in loss_ranges
     ]
 
-    # 食費のグラフ用に分類
+    # # # 食費のグラフ用に分類
     b = (
         session.query(gen.c.UserID, func.sum(ShoppingTable.Price).label("total"))
         .join(ShoppingTable, gen.c.UserID == ShoppingTable.UserID)
         .filter(
             ShoppingTable.Date.between(
                 first_day_of_this_month, last_day_of_this_month
-            )  # dateカラムの値が1ヶ月前と今日の間であることを確認
+            )  
         )
         .group_by(gen.c.UserID)
         .subquery()
     )
 
     combined_query = (
-        session.query(b.c.UserID, (b.c.total + a.c.total).label("total"))
-        .join(a, b.c.UserID == a.c.UserID)
+        session.query(
+            a.c.UserID, 
+            (a.c.total + case(
+                (b.c.total == None, 0),  # <- ここで直接条件を渡す
+                else_=b.c.total
+            )).label("total")
+        )
+        .outerjoin(b, a.c.UserID == b.c.UserID)
         .subquery()
     )
+
 
     record = (
         session.query(
@@ -799,6 +823,8 @@ async def get_food_db_info(current_user: loginUser = Depends(get_current_user)):
         .group_by("name")
         .all()
     )
+    record_dict = {item.name: item.number for item in record}
+
 
     price_ranges = ["~3万円", "3~4万円", "4~5万円", "5~6万円", "6~8万円", "8~10万円", "10万円~"]
 
